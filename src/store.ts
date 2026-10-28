@@ -27,6 +27,7 @@ export interface AppState {
   earnedBadges: string[]
   quests: { date: string; items: QuestState[] }
   toasts: string[]
+  user: { name: string } | null
 }
 
 const KEY = 'barista-os-v1'
@@ -65,6 +66,7 @@ const initial: AppState = {
   earnedBadges: [],
   quests: { date: '', items: [] },
   toasts: [],
+  user: null,
 }
 
 function load(): AppState {
@@ -241,7 +243,13 @@ export const actions = {
   },
   resetAll() {
     localStorage.removeItem(KEY)
-    state = { ...initial }
+    state = { ...initial, user: null }
     listeners.forEach((l) => l())
+  },
+  login(name: string) {
+    setState({ user: { name } })
+  },
+  logout() {
+    setState({ user: null })
   },
 }

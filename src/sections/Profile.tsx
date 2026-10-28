@@ -37,7 +37,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="mt-5 space-y-2">
-          {ranks.map((rk) => (
+          {ranks.filter((rk) => rk.id !== "trainee").map((rk) => (
             <div key={rk.id} className="flex items-center gap-3">
               <span className="w-28 shrink-0 text-[12px] font-bold" style={{ color: s.xp >= rk.xp ? '#C9D98A' : '#555555' }}>
                 {rk.title}
@@ -102,6 +102,11 @@ export default function Profile() {
               style={{ borderColor: '#3A3A3D', color: '#111111' }}>Отмена</button>
           </div>
         )}
+      </div>
+
+      <div className="rounded-card bg-light p-5 anim-rise">
+        <p className="text-[13px] font-bold" style={{ color: "#111111" }}>Аккаунт: {s.user?.name}</p>
+        <button onClick={() => actions.logout()} className="mt-3 rounded-pill px-4 py-2 text-[12px] font-bold" style={{ background: "#111111", color: "#FFFFFF" }}>Выйти</button>
       </div>
     </div>
   )

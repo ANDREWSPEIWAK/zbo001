@@ -10,15 +10,16 @@ import Discipline from './sections/Discipline'
 import Library from './sections/Library'
 import Wheel from './sections/Wheel'
 import Profile from './sections/Profile'
+import Auth from './sections/Auth'
 import {
-  Menu, X, User, Route, BookOpen, CheckCircle2, Clock, ShieldCheck, Palette, FileText, Globe, Settings,
+  Menu, X, User, Compass, BookOpen, CheckCircle2, Clock, ShieldCheck, Coffee, FileText, Globe, Settings,
   type LucideIcon,
 } from 'lucide-react'
 
 type Tab = 'path' | 'ttk' | 'tests' | 'shift' | 'discipline' | 'library' | 'wheel' | 'profile'
 
 const bottomTabs: { id: Tab; label: string; Icon: LucideIcon }[] = [
-  { id: 'path', label: 'Путь', Icon: Route },
+  { id: 'path', label: 'Путь', Icon: Compass },
   { id: 'library', label: 'Методики', Icon: BookOpen },
   { id: 'tests', label: 'Тесты', Icon: CheckCircle2 },
   { id: 'shift', label: 'Смена', Icon: Clock },
@@ -27,7 +28,7 @@ const bottomTabs: { id: Tab; label: string; Icon: LucideIcon }[] = [
 
 const drawerItems: { id: Tab | 'lang' | 'settings'; label: string; Icon: LucideIcon }[] = [
   { id: 'discipline', label: 'Дисциплина', Icon: ShieldCheck },
-  { id: 'wheel', label: 'Вкусы', Icon: Palette },
+  { id: 'wheel', label: 'Вкусы', Icon: Coffee },
   { id: 'ttk', label: 'Техкарты', Icon: FileText },
   { id: 'lang', label: 'Язык', Icon: Globe },
   { id: 'settings', label: 'Настройки', Icon: Settings },
@@ -37,11 +38,23 @@ export default function App() {
   const s = useStore()
   const [tab, setTab] = useState<Tab>('path')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const r = rankFor(s.xp)
 
   useEffect(() => {
     actions.dayOpened()
   }, [])
+  const r = rankFor(s.xp)
+
+  if (!s.user) {
+    return (
+      <div className='min-h-screen bg-bg text-white'>
+        <Toasts />
+        <div className='mx-auto w-full max-w-[480px] px-5 pt-4'>
+          <Auth />
+        </div>
+      </div>
+    )
+  }
+
 
   const go = (t: Tab) => {
     setTab(t)
