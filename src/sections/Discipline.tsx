@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { t, type Lang } from '../lang'
 import { disciplineChecklists, disciplineRules, levelLabels } from '../data/discipline'
-import { Card, Button, Chip } from '../components/app-ui'
+import { CardLight, Chip } from '../components/app-ui'
 
 export default function Discipline({ lang }: { lang: Lang }) {
   const L = (key: string) => t(key, lang)
@@ -16,9 +16,9 @@ export default function Discipline({ lang }: { lang: Lang }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="space-y-2"
       >
-        <p className="eyebrow">Дисциплина сети</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('discipline.title_ru')}</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('discipline.subtitle_ru')}</p>
+        <Eyebrow>Дисциплина сети</Eyebrow>
+        <H1>{L('discipline.title_ru')}</H1>
+        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{L('discipline.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -40,37 +40,33 @@ export default function Discipline({ lang }: { lang: Lang }) {
         >
           {disciplineRules.map((r) => {
             const lvl = levelLabels[r.level]
-            const bg = lvl.color === '#F87171' ? 'bg-[#F8717122]' : lvl.color === '#FBBF24' ? 'bg-[#FBBF2422]' : 'bg-[#C9DB8A22]'
+            const bg = lvl.color === '#EB5A52' ? 'bg-[#EB5A5222]' : lvl.color === '#FDC55E' ? 'bg-[#FDC55E22]' : 'bg-[#C9D98A22]'
             return (
               <motion.div key={r.id}
                 whileHover={{ scale: 1.005 }}
                 whileTap={{ scale: 0.99 }}
                 className="space-y-3"
               >
-                <Card light className="space-y-3">
+                <CardLight className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <span className={`rounded-[22px] px-3 py-1 text-[11px] font-bold ${bg}`} style={{ color: lvl.color }}>
-                        {lvl.label}
-                      </span>
-                      <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{r.title}</h3>
+                      <span className={`rounded-[22px] px-3 py-1 text-[11px] font-bold ${bg}`} style={{ color: lvl.color }}>{lvl.label}</span>
+                      <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{r.title}</h3>
                     </div>
-                    <span className={`text-[11px] font-bold ${r.level === 'critical' ? 'text-[#F87171]' : r.level === 'major' ? 'text-[#FBBF24]' : 'text-[#C9DB8A]'}`}>
-                      {r.level}
-                    </span>
+                    <span className={`text-[11px] font-bold ${r.level === 'critical' ? 'text-[#EB5A52]' : r.level === 'major' ? 'text-[#FDC55E]' : 'text-[#C9D98A]'}`}>{r.level}</span>
                   </div>
-                  <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.rule}</p>
+                  <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{r.rule}</p>
                   <div className="mt-3 grid gap-2">
                     <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                      <p className="eyebrow mb-1" style={{ color: '#8B5CF6' }}>{L('discipline.why_ru')}</p>
-                      <p className="text-[12px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.why}</p>
+                      <Eyebrow color="violet" style={{ marginBottom: 4 }}>{L('discipline.why_ru')}</Eyebrow>
+                      <p className="text-[12px] leading-relaxed" style={{ color: '#111111' }}>{r.why}</p>
                     </div>
                     <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                      <p className="eyebrow mb-1" style={{ color: '#F87171' }}>{L('discipline.how_ru')}</p>
-                      <p className="text-[12px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.how}</p>
+                      <Eyebrow color="coral" style={{ marginBottom: 4 }}>{L('discipline.how_ru')}</Eyebrow>
+                      <p className="text-[12px] leading-relaxed" style={{ color: '#111111' }}>{r.how}</p>
                     </div>
                   </div>
-                </Card>
+                </CardLight>
               </motion.div>
             )
           })}
@@ -90,31 +86,36 @@ export default function Discipline({ lang }: { lang: Lang }) {
               whileTap={{ scale: 0.99 }}
               className="space-y-4"
             >
-              <Card light className="space-y-4">
+              <CardLight className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="eyebrow" style={{ color: '#8B5CF6' }}>{cl.kicker}</p>
-                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{cl.title}</h3>
+                    <Eyebrow color="violet">{cl.kicker}</Eyebrow>
+                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{cl.title}</h3>
                   </div>
                 </div>
                 <div className="mt-3 space-y-1">
                   {cl.items.map((it) => (
                     <div key={it.id} className="flex items-start gap-3 border-t border-solid border-[#3A3A3D] px-4 py-3 btn-press">
-                      <button type="button" aria-pressed={false}
-                        className="mt-0.5 flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-[6px] border-2"
-                        style={{ borderColor: '#FFFFFF', background: 'transparent' }}
-                      />
-                      <span className="flex-1 text-[14px] font-bold leading-relaxed" style={{ color: '#0F0F10' }}>{it.text}</span>
-                      {it.tip && <span className="text-right text-[11px] font-bold" style={{ color: '#666666' }}>{it.tip}</span>}
+                      <button type="button" aria-pressed={false} className="mt-0.5 flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-[6px] border-2" style={{ borderColor: '#FFFFFF', background: 'transparent' }} />
+                      <span className="flex-1 text-[14px] font-bold leading-relaxed" style={{ color: '#111111' }}>{it.text}</span>
+                      {it.tip && <span className="text-right text-[11px] font-bold" style={{ color: '#555555' }}>{it.tip}</span>}
                     </div>
                   ))}
                 </div>
-                <Button variant="secondary" className="mt-3 w-auto" style={{ height: 44, padding: '0 14px', fontSize: '12px' }}>{L('discipline.open_std_ru')}</Button>
-              </Card>
+                <button className="mt-3 w-auto" style={{ height: 44, padding: '0 14px', fontSize: '12px' }}>{L('discipline.open_std_ru')}</button>
+              </CardLight>
             </motion.div>
           ))}
         </motion.div>
       )}
     </div>
   )
+}
+
+function Eyebrow({ color = 'lime', children, style }: { color?: string; children: React.ReactNode; style?: React.CSSProperties }) {
+  return <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.14em', color, margin: 0, ...style }}>{children}</p>
+}
+
+function H1({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <h1 className={`mt-1 ${className}`} style={{ fontFamily: "'Unbounded', 'Manrope', sans-serif", fontWeight: 800, fontSize: 28, textTransform: 'uppercase', lineHeight: 1.1 }}>{children}</h1>
 }

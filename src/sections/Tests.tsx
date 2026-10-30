@@ -5,7 +5,9 @@ import { t, type Lang } from '../lang'
 import { recipes, ttkCategories } from '../data/recipes'
 import { examBlocks, examQuestions } from '../data/exam'
 import { serviceCases } from '../data/cases'
-import { Chip, Pill, ProgressBar, ProgressRing, Card } from '../components/app-ui'
+import {
+  Eyebrow, H1, CardLight, Chip, Pill, ProgressBar,
+} from '../components/app-ui'
 
 type Mode = 'hub' | 'quiz' | 'exam' | 'cases' | 'blitz'
 
@@ -30,33 +32,18 @@ function genQuiz(count = 10): QuizQ[] {
       const others = shuffle(recipes.filter((x) => x.id !== r.id && x.category === r.category))
       if (others.length < 3) continue
       const opts = shuffle([r.recipe.ru, ...others.slice(0, 3).map((o) => o.recipe.ru)])
-      qs.push({
-        prompt: `ТТК напитка «${r.name}»?`,
-        options: opts,
-        correct: opts.indexOf(r.recipe.ru),
-        note: r.method.ru,
-      })
+      qs.push({ prompt: `ТТК напитка «${r.name}»?`, options: opts, correct: opts.indexOf(r.recipe.ru), note: r.method.ru })
     } else if (kind === 1) {
       const cat = ttkCategories.find((c) => c.id === r.category)!
       const others = shuffle(ttkCategories.filter((c) => c.id !== r.category)).slice(0, 3)
       const opts = shuffle([cat.title, ...others.map((o) => o.title)])
-      qs.push({
-        prompt: `К какой категории относится «${r.name}»?`,
-        options: opts,
-        correct: opts.indexOf(cat.title),
-        note: `${r.name} — категория «${cat.title}».`,
-      })
+      qs.push({ prompt: `К какой категории относится «${r.name}»?`, options: opts, correct: opts.indexOf(cat.title), note: `${r.name} — категория «${cat.title}».` })
     } else {
       if (r.steps.ru.length < 2) continue
       const first = r.steps.ru[0]
       const others = shuffle(recipes.filter((x) => x.id !== r.id && x.steps.ru[0] !== first)).slice(0, 3)
       const opts = shuffle([first, ...others.map((o) => o.steps.ru[0])])
-      qs.push({
-        prompt: `Первый шаг сборки «${r.name}»?`,
-        options: opts,
-        correct: opts.indexOf(first),
-        note: `Полная сборка: ${r.steps.ru.join(' → ')}`,
-      })
+      qs.push({ prompt: `Первый шаг сборки «${r.name}»?`, options: opts, correct: opts.indexOf(first), note: `Полная сборка: ${r.steps.ru.join(' → ')}` })
     }
   }
   return qs
@@ -64,10 +51,10 @@ function genQuiz(count = 10): QuizQ[] {
 
 function OptionBtn({ text, state, onClick }: { text: string; state: 'idle' | 'right' | 'wrong' | 'dim'; onClick: () => void }) {
   const colors = {
-    idle: { bg: '#1A1A1C', border: '#3A3A3D', fg: '#FFFFFF' },
-    right: { bg: '#C9DB8A22', border: '#C9DB8A', fg: '#C9DB8A' },
-    wrong: { bg: '#F8717122', border: '#F87171', fg: '#F87171' },
-    dim: { bg: '#0F0F10', border: '#3A3A3D', fg: '#666666' },
+    idle: { bg: '#1B1B1D', border: '#3A3A3D', fg: '#FFFFFF' },
+    right: { bg: '#C9D98A22', border: '#C9D98A', fg: '#C9D98A' },
+    wrong: { bg: '#EB5A5222', border: '#EB5A52', fg: '#EB5A52' },
+    dim: { bg: '#111111', border: '#3A3A3D', fg: '#555555' },
   }[state]
   return (
     <motion.button
@@ -96,10 +83,7 @@ function Quiz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
     if (idx === qs[i].correct) setScore((s) => s + 1)
   }
 
-  const next = () => {
-    setPicked(null)
-    setI((x) => x + 1)
-  }
+  const next = () => { setPicked(null); setI((x) => x + 1) }
 
   useEffect(() => {
     if (done) {
@@ -117,21 +101,21 @@ function Quiz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="rounded-card bg-surface p-8 text-left"
+        className="CardLight p-8 text-left"
       >
         <div className="flex items-center justify-between">
-          <ProgressRing value={pct} size={110} color={pct >= 80 ? '#C9DB8A' : pct >= 50 ? '#FBBF24' : '#F87171'} stroke={6}>
+          <ProgressRingInline value={pct} size={110} color={pct >= 80 ? '#C9D98A' : pct >= 50 ? '#FDC55E' : '#EB5A52'} stroke={6}>
             <span className="font-display text-[22px] font-extrabold">{pct}%</span>
-          </ProgressRing>
+          </ProgressRingInline>
           <div>
-            <p className="font-display mt-4 text-[18px] font-extrabold" style={{ color: '#0F0F10' }}>{score}/{qs.length} верно</p>
-            <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
+            <p className="font-display mt-4 text-[18px] font-extrabold" style={{ color: '#111111' }}>{score}/{qs.length} верно</p>
+            <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
               {pct >= 80 ? 'Меню сидит в руках. Так держать!' : pct >= 50 ? 'Неплохо. Слабые места — в карточках ТТК.' : 'Открой ТТК и пройдите Build-тренажёр по ошибкам.'}
             </p>
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>{L('tests.back_ru')}</button>
+          style={{ background: '#111111', color: '#FFFFFF', height: 52 }}>{L('tests.back_ru')}</button>
       </motion.div>
     )
   }
@@ -144,13 +128,13 @@ function Quiz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="space-y-4"
     >
-      <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
+      <div className="flex items-start justify-between text-[12px]" style={{ color: '#555555' }}>
         <span>{L('tests.question_ru')} {i + 1} / {qs.length}</span>
-        <span style={{ color: '#C9DB8A' }}>{L('tests.correct_ru')}: {score}</span>
+        <span style={{ color: '#C9D98A' }}>{L('tests.correct_ru')}: {score}</span>
       </div>
-      <div className="mt-2"><ProgressBar value={(i / qs.length) * 100} color="#C9DB8A" /></div>
-      <Card light className="mt-5 p-6 space-y-4">
-        <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
+      <div className="mt-2"><ProgressBar value={(i / qs.length) * 100} /></div>
+      <CardLight className="mt-5 p-6 space-y-4">
+        <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
         <div className="space-y-2">
           {q.options.map((o, idx) => (
             <OptionBtn key={idx} text={o}
@@ -159,22 +143,38 @@ function Quiz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
           ))}
         </div>
         {picked !== null && (
-          <div className="rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10' }}>
+          <div className="rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111' }}>
             {q.note}
           </div>
         )}
-      </Card>
+      </CardLight>
       {picked !== null && (
         <motion.button onClick={next}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           className="mt-4 w-full rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}
+          style={{ background: '#111111', color: '#FFFFFF', height: 52 }}
         >
           {i + 1 === qs.length ? L('tests.result_ru') : L('tests.next_ru')}
         </motion.button>
       )}
     </motion.div>
+  )
+}
+
+function ProgressRingInline({ value, size = 56, stroke = 4, color = '#C9D98A', children }: { value: number; size?: number; stroke?: number; color?: string; children?: React.ReactNode }) {
+  const r = (size - stroke) / 2
+  const c = 2 * Math.PI * r
+  const off = c - (Math.min(100, Math.max(0, value)) / 100) * c
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#2A2A2D" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+          strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">{children}</div>
+    </div>
   )
 }
 
@@ -214,24 +214,22 @@ function Blitz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="rounded-card bg-surface p-8 text-left"
+        className="CardLight p-8 text-left"
       >
-        <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('tests.time_up_ru')}</p>
+        <Eyebrow color="violet">{L('tests.time_up_ru')}</Eyebrow>
         <div className="flex items-start justify-between mt-3">
-          <p className="font-display text-[48px] font-extrabold" style={{ color: '#F87171' }}>{correct}</p>
+          <p className="font-display text-[48px] font-extrabold" style={{ color: '#EB5A52' }}>{correct}</p>
           <div>
-            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{correct} {L('tests.correct_ru')} из {total} за минуту</p>
-            <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
-              {correct >= 8
-                ? 'Машина потока. Утренний пик вам по плечу.'
-                : correct >= 5
-                  ? 'Хороший темп. Ещё пара заходов — и будет 8+.'
-                  : 'В пике счёт на секунды. Подтяните ТТК и возвращайтесь.'}
+            <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{correct} {L('tests.correct_ru')} из {total} за минуту</p>
+            <p className="text-[13px] leading-relaxed" style={{ color: '#111111' }}>
+              {correct >= 8 ? 'Машина потока. Утренний пик вам по плечу.' : correct >= 5
+                ? 'Хороший темп. Ещё пара заходов — и будет 8+.'
+                : 'В пике счёт на секунды. Подтяните ТТК и возвращайтесь.'}
             </p>
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#F87171', color: '#0F0F10', height: 52 }}>{L('tests.back_ru')}</button>
+          style={{ background: '#EB5A52', color: '#111111', height: 52 }}>{L('tests.back_ru')}</button>
       </motion.div>
     )
   }
@@ -244,22 +242,22 @@ function Blitz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
       className="space-y-4"
     >
       <div className="flex items-start justify-between">
-        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
+        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#EB5A52' : '#FDC55E' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
-          <Pill color="#C9DB8A">{correct} {L('tests.served_ru')}</Pill>
-          <Pill color="#F87171">{total - correct} {L('tests.left_ru')}</Pill>
+          <Pill dark>{correct} {L('tests.served_ru')}</Pill>
+          <Pill dark>{total - correct} {L('tests.left_ru')}</Pill>
         </div>
       </div>
-      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#F87171' : '#FBBF24'} /></div>
+      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} /></div>
       {q && (
-        <Card light className="mt-5 p-6" key={q.prompt}>
-          <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
+        <CardLight className="mt-5 p-6" key={q.prompt}>
+          <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
           <div className="mt-5 space-y-2">
             {q.options.map((o, idx) => (
               <OptionBtn key={idx} text={o} state="idle" onClick={() => answer(idx)} />
             ))}
           </div>
-        </Card>
+        </CardLight>
       )}
     </motion.div>
   )
@@ -297,47 +295,47 @@ function Exam({ lang }: { lang: Lang }) {
           <Chip key={b} active={i === block} onClick={() => { setBlock(i); setIdx(0); setRevealed(false) }}>{b}</Chip>
         ))}
       </div>
-      <div className="mt-3 flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
+      <div className="mt-3 flex items-start justify-between text-[12px]" style={{ color: '#555555' }}>
         <span>{L('tests.question_ru')} {idx + 1} / {blockQs.length}</span>
-        <span style={{ color: '#C9DB8A' }}>{knownInBlock} / {blockQs.length} · всего {totalKnown} / 40</span>
+        <span style={{ color: '#C9D98A' }}>{knownInBlock} / {blockQs.length} · всего {totalKnown} / 40</span>
       </div>
-      <div className="mt-2"><ProgressBar value={(knownInBlock / blockQs.length) * 100} color="#C9DB8A" /></div>
+      <div className="mt-2"><ProgressBar value={(knownInBlock / blockQs.length) * 100} /></div>
 
       {q ? (
-        <Card light className="mt-4 p-6 space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('tests.exam_instr_ru')}</p>
-          <h3 className="font-display mt-3 text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
+        <CardLight className="mt-4 p-6 space-y-4">
+          <Eyebrow color="violet">{L('tests.exam_instr_ru')}</Eyebrow>
+          <h3 className="font-display mt-3 text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
           {!revealed ? (
             <button onClick={() => setRevealed(true)} className="mt-6 w-full rounded-[26px] border px-4 py-3 text-[13px] font-bold btn-press"
-              style={{ borderColor: '#3A3A3D', color: '#0F0F10', height: 52 }}>{L('tests.show_etalon_ru')}</button>
+              style={{ borderColor: '#3A3A3D', color: '#111111', height: 52 }}>{L('tests.show_etalon_ru')}</button>
           ) : (
             <div>
-              <div className="rounded-[16px] p-4 text-[13px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10', border: '1px solid #C9DB8A55' }}>
+              <div className="rounded-[16px] p-4 text-[13px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111', border: '1px solid #C9D98A55' }}>
                 {q.model}
               </div>
-              <p className="mt-4 text-left text-[12px] font-bold" style={{ color: '#666666' }}>Ваш ответ был близок к эталону?</p>
+              <p className="mt-4 text-left text-[12px] font-bold" style={{ color: '#555555' }}>Ваш ответ был близок к эталону?</p>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <button onClick={() => mark(true)} className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-                  style={{ background: '#C9DB8A', color: '#0F0F10', height: 52 }}>Знал · +8 XP</button>
+                  style={{ background: '#C9D98A', color: '#111111', height: 52 }}>Знал · +8 XP</button>
                 <button onClick={() => mark(false)} className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-                  style={{ background: '#F87171', color: '#FFFFFF', height: 52 }}>Надо повторить</button>
+                  style={{ background: '#EB5A52', color: '#FFFFFF', height: 52 }}>Надо повторить</button>
               </div>
             </div>
           )}
-        </Card>
+        </CardLight>
       ) : (
-        <Card light className="mt-4 p-6 text-left">
-          <p className="text-[13px]" style={{ color: '#666666' }}>Блок закрыт.</p>
-        </Card>
+        <CardLight className="mt-4 p-6 text-left">
+          <p className="text-[13px]" style={{ color: '#555555' }}>Блок закрыт.</p>
+        </CardLight>
       )}
     </motion.div>
   )
 }
 
 function resultColor(score: number): string {
-  if (score === 2) return 'text-[#C9DB8A]'
-  if (score === 1) return 'text-[#FBBF24]'
-  return 'text-[#F87171]'
+  if (score === 2) return 'text-[#C9D98A]'
+  if (score === 1) return 'text-[#FDC55E]'
+  return 'text-[#EB5A52]'
 }
 
 function resultLabel(score: number): React.ReactNode {
@@ -367,13 +365,13 @@ function Cases({ lang }: { lang: Lang }) {
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="space-y-4"
     >
-      <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
+      <div className="flex items-start justify-between text-[12px]" style={{ color: '#555555' }}>
         <span>{L('tests.question_ru')} {i + 1} / {serviceCases.length}</span>
-        <Pill color="#FBBF24">{c.block}</Pill>
+        <Pill dark>{c.block}</Pill>
       </div>
-      <div className="mt-2"><ProgressBar value={(i / serviceCases.length) * 100} color="#FBBF24" /></div>
-      <Card light className="mt-4 p-6 space-y-4">
-        <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{c.scene}</p>
+      <div className="mt-2"><ProgressBar value={(i / serviceCases.length) * 100} /></div>
+      <CardLight className="mt-4 p-6 space-y-4">
+        <p className="text-[13px] leading-relaxed" style={{ color: '#111111' }}>{c.scene}</p>
         <div className="mt-5 space-y-2">
           {c.options.map((o, idx) => {
             let st: 'idle' | 'right' | 'wrong' | 'dim' = 'idle'
@@ -391,18 +389,18 @@ function Cases({ lang }: { lang: Lang }) {
               {resultLabel(c.options[picked].score)}
               {solvedBest === 2 && picked !== null && c.options[picked].score < 2 ? ' (ранее решён верно)' : ''}
             </p>
-            <div className="mt-2 rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10' }}>
+            <div className="mt-2 rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111' }}>
               {c.explain}
             </div>
           </div>
         )}
-      </Card>
+      </CardLight>
       {picked !== null && (
         <motion.button onClick={() => { setPicked(null); setI((x) => (x + 1) % serviceCases.length) }}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           className="mt-4 w-full rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#C9DB8A', color: '#0F0F10', height: 52 }}
+          style={{ background: '#C9D98A', color: '#111111', height: 52 }}
         >
           {i + 1 === serviceCases.length ? 'Сначала ↺' : 'Следующий кейс →'}
         </motion.button>
@@ -429,16 +427,16 @@ export default function Tests({ lang }: { lang: Lang }) {
   const cards = [
     { id: 'quiz' as Mode, kicker: 'Квиз · 10 вопросов', title: 'ТТК под контролем',
       desc: 'Рецепты, категории, первые шаги сборки. Вопросы из всего меню.',
-      stat: `лучший: ${s.quizBest}%`, color: '#C9DB8A' },
+      stat: `лучший: ${s.quizBest}%`, color: '#C9D98A' },
     { id: 'blitz' as Mode, kicker: '60 секунд', title: 'Блиц «Час пик»',
       desc: 'Минутный спринт на скорость вспоминания меню. Без пауз.',
-      stat: `рекорд: ${s.blitzBest}`, color: '#F87171' },
+      stat: `рекорд: ${s.blitzBest}`, color: '#EB5A52' },
     { id: 'exam' as Mode, kicker: '40 вопросов · 4 блока', title: 'Экзамен бариста',
       desc: 'Сервис, техника, фильтр, эспрессо. Открытые вопросы с эталоном и самооценкой.',
-      stat: `закрыто: ${examTotal} / 40`, color: '#FBBF24' },
+      stat: `закрыто: ${examTotal} / 40`, color: '#FDC55E' },
     { id: 'cases' as Mode, kicker: '12 ситуаций', title: 'Кейсы смены',
       desc: 'Реальные ситуации с гостями, очередью и станцией. Логика выбора.',
-      stat: `решено идеально: ${casesPerfect} / 12`, color: '#C9DB8A' },
+      stat: `решено идеально: ${casesPerfect} / 12`, color: '#C9D98A' },
   ]
 
   return (
@@ -449,9 +447,9 @@ export default function Tests({ lang }: { lang: Lang }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="space-y-2"
       >
-        <p className="eyebrow">Проверка знаний</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('tests.title_ru')}</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
+        <Eyebrow>Проверка знаний</Eyebrow>
+        <H1>{L('tests.title_ru')}</H1>
+        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>
           {L('tests.subtitle_ru')} {knownCount} / {totalTtk} — квиз берёт вопросы из всего меню.
         </p>
       </motion.div>
@@ -465,14 +463,14 @@ export default function Tests({ lang }: { lang: Lang }) {
           <motion.button key={c.id} onClick={() => setMode(c.id)}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            className="rounded-card bg-surface p-5 text-left" style={{ animationDelay: `${i * 60}ms` }}
+            className="CardLight p-5 text-left" style={{ animationDelay: `${i * 60}ms` }}
           >
             <div className="flex items-start justify-between">
-              <p className="eyebrow" style={{ color: '#8B5CF6' }}>{c.kicker}</p>
-              <span className="text-[10px] font-bold" style={{ color: '#666666' }}>{c.stat}</span>
+              <Eyebrow color="violet">{c.kicker}</Eyebrow>
+              <span className="text-[10px] font-bold" style={{ color: '#555555' }}>{c.stat}</span>
             </div>
-            <h3 className="font-display mt-2 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{c.title}</h3>
-            <p className="mt-2 text-[12px] leading-relaxed" style={{ color: '#666666' }}>{c.desc}</p>
+            <h3 className="font-display mt-2 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{c.title}</h3>
+            <p className="mt-2 text-[12px] leading-relaxed" style={{ color: '#555555' }}>{c.desc}</p>
             <p className="mt-4 text-[12px] font-bold" style={{ color: c.color }}>Начать →</p>
           </motion.button>
         ))}

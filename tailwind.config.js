@@ -4,27 +4,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* Brand palette — vibrant, high-contrast, no same-on-same */
-        bg: '#0F0F10',            /* deep near-black background */
-        surface: '#1A1A1C',       /* dark surface, slightly lighter than bg */
-        surface2: '#2A2A2D',      /* elevated dark surface */
-        border: '#3A3A3D',        /* subtle border */
-        borderSoft: '#4A4A4D',    /* softer border */
-        ink: '#FFFFFF',           /* primary text on dark */
-        muted: '#A9A9AE',         /* secondary text */
-        lime: '#C9DB8A',          /* light green (only on dark bg) */
-        limeDark: '#8FA55E',      /* darker lime for text on lime */
-        purple: '#8B5CF6',        /* vibrant brand purple */
-        purpleDark: '#6D28D9',    /* deeper purple */
-        purpleBg: '#2E1A47',      /* dark purple panel bg (not same as purple text) */
-        yellow: '#FBBF24',        /* warm yellow/gold */
-        yellowDark: '#B45309',    /* dark gold for text on yellow */
-        coral: '#F87171',         /* vibrant coral/red */
-        coralDark: '#B91C1C',     /* dark red for text on coral */
-        shadowPurple: 'rgba(139, 92, 246, 0.45)',
-        shadowLime: 'rgba(201, 219, 138, 0.3)',
-        shadowYellow: 'rgba(251, 191, 36, 0.3)',
-        shadowCoral: 'rgba(248, 113, 113, 0.35)',
+        /* Brand palette from fantastic-enigma redesign */
+        bg: '#0F0F10',
+        surface: '#E8E6DF',
+        surface2: '#1B1B1D',
+        border: '#3A3A3D',
+        borderSoft: '#CFCCC4',
+        ink: '#111111',
+        muted: '#555555',
+        lime: '#C9D98A',
+        limeDark: '#6B7A44',
+        violet: '#5B3FF0',
+        violetDark: '#3D2AA3',
+        yellow: '#FDC55E',
+        yellowDark: '#B45309',
+        coral: '#EB5A52',
+        coralDark: '#C94844',
+        plum: '#523E80',
+        shadowLime: 'rgba(201, 217, 138, 0.3)',
+        shadowViolet: 'rgba(91, 63, 240, 0.35)',
+        shadowYellow: 'rgba(253, 197, 94, 0.3)',
+        shadowCoral: 'rgba(235, 90, 82, 0.35)',
+        shadowPlum: 'rgba(82, 62, 128, 0.35)',
       },
       fontFamily: {
         display: ['Unbounded', 'Manrope', 'sans-serif'],
@@ -34,16 +35,16 @@ module.exports = {
         card: '32px',
         tile: '28px',
         btn: '26px',
-        chip: '22px',
+        chip: '20px',
+        pill: '13px',
         round: '9999px',
       },
       fontSize: {
         kicker: ['12px', { lineHeight: '1.2', letterSpacing: '0.14em', fontWeight: '700' }],
-        tile: ['15px', { lineHeight: '1.2', fontWeight: '800', fontFamily: "'Unbounded', Manrope, sans-serif" }],
+        tile: ['14px', { lineHeight: '1.15', fontWeight: '800', fontFamily: "'Unbounded', Manrope, sans-serif" }],
         cardTitle: ['25px', { lineHeight: '1.15', fontWeight: '800', fontFamily: "'Unbounded', Manrope, sans-serif" }],
         heading: ['28px', { lineHeight: '1.15', fontWeight: '800', fontFamily: "'Unbounded', Manrope, sans-serif" }],
         body: ['14px', { lineHeight: '1.5', fontWeight: '500' }],
-        bodyLg: ['15px', { lineHeight: '1.6', fontWeight: '500' }],
         small: ['12px', { lineHeight: '1.4', fontWeight: '500' }],
         tiny: ['11px', { lineHeight: '1.4', fontWeight: '700' }],
       },
@@ -54,11 +55,12 @@ module.exports = {
       boxShadow: {
         press: 'inset 3px 3px 6px rgba(0,0,0,0.5)',
         selected: 'inset -5px -5px 10px rgba(0,0,0,0.8)',
-        outer: '0 20px 40px rgba(139, 92, 246, 0.35)',
-        outerLime: '0 20px 40px rgba(201, 219, 138, 0.3)',
-        outerYellow: '0 20px 40px rgba(251, 191, 36, 0.3)',
-        outerCoral: '0 20px 40px rgba(248, 113, 113, 0.35)',
-        card: '0 12px 32px rgba(0,0,0,0.5)',
+        outer: '0 20px 40px rgba(91, 63, 240, 0.35)',
+        outerLime: '0 20px 40px rgba(201, 217, 138, 0.3)',
+        outerYellow: '0 20px 40px rgba(253, 197, 94, 0.3)',
+        outerCoral: '0 20px 40px rgba(235, 90, 82, 0.35)',
+        outerPlum: '0 20px 40px rgba(82, 62, 128, 0.35)',
+        card: '0 12px 32px rgba(0,0,0,0.55)',
       },
       transition: {
         spring: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',

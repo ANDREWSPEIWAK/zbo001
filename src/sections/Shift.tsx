@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { t, type Lang } from '../lang'
 import { actions, useStore } from '../store'
 import { barPositions, serviceFlow, timeStandards, sequenceRules, rushDrinks, rushStepsLegend, type RushDrink } from '../data/service'
-import { Chip, ProgressBar, Pill, Card } from '../components/app-ui'
+import { Eyebrow, H1, CardLight, Chip, Pill, ProgressBar } from '../components/app-ui'
 
 interface ActiveOrder {
   key: number
@@ -82,24 +82,22 @@ function Rush({ onExit, lang }: { onExit: () => void; lang: Lang }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="rounded-card bg-surface p-8 text-left"
+        className="CardLight p-8 text-left"
       >
-        <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('shift.shift_end_ru')}</p>
+        <Eyebrow color="violet">{L('shift.shift_end_ru')}</Eyebrow>
         <div className="flex items-start justify-between mt-3">
-          <p className="font-display text-[48px] font-extrabold" style={{ color: '#C9DB8A' }}>{served}</p>
+          <p className="font-display text-[48px] font-extrabold" style={{ color: '#C9D98A' }}>{served}</p>
           <div>
-            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{served} {L('shift.served_ru')} {lost}</p>
-            <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
-              {served >= 6
-                ? 'Машина потока. Поток не остановить — так держат утро в пике.'
-                : served >= 4
-                  ? 'Хороший темп. Следите за приоритетом — обслуживайте самый «горячий» заказ первым.'
-                  : 'Начинайте с самого нетерпеливого гостя и помните порядок сборки из ТТК.'}
+            <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{served} {L('shift.served_ru')} {lost}</p>
+            <p className="text-[13px] leading-relaxed" style={{ color: '#111111' }}>
+              {served >= 6 ? 'Машина потока. Поток не остановить — так держат утро в пике.' : served >= 4
+                ? 'Хороший темп. Следите за приоритетом — обслуживайте самый «горячий» заказ первым.'
+                : 'Начинайте с самого нетерпеливого гостя и помните порядок сборки из ТТК.'}
             </p>
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>{L('shift.return_ru')}</button>
+          style={{ background: '#111111', color: '#FFFFFF', height: 52 }}>{L('shift.return_ru')}</button>
       </motion.div>
     )
   }
@@ -112,45 +110,40 @@ function Rush({ onExit, lang }: { onExit: () => void; lang: Lang }) {
       className="space-y-4"
     >
       <div className="flex items-start justify-between">
-        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
+        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#EB5A52' : '#FDC55E' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
-          <Pill color="#C9DB8A">{served} {L('tests.served_ru')}</Pill>
-          <Pill color="#F87171">{lost} {L('tests.left_ru')}</Pill>
+          <Pill dark>{served} {L('tests.served_ru')}</Pill>
+          <Pill dark>{lost} {L('tests.left_ru')}</Pill>
         </div>
       </div>
-      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#F87171' : '#FBBF24'} /></div>
+      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} /></div>
 
       <div className="mt-4 space-y-2">
         {orders.length === 0 && (
-          <div className="rounded-card bg-surface p-6 text-left text-[13px]" style={{ color: '#666666' }}>
+          <div className="CardLight p-6 text-left text-[13px]" style={{ color: '#555555' }}>
             Гости подходят к стойке…
           </div>
         )}
         {[...orders].sort((a, b) => a.patience - b.patience).map((o) => {
           const pct = (o.patience / o.drink.patience) * 100
-          const color = pct > 50 ? '#C9DB8A' : pct > 25 ? '#FBBF24' : '#F87171'
+          const color = pct > 50 ? '#C9D98A' : pct > 25 ? '#FDC55E' : '#EB5A52'
           return (
             <motion.div key={o.key} whileHover={{ scale: 1.005 }}
-              className="rounded-card bg-surface p-4"
-              style={{ borderColor: color }}
+              className="CardLight p-4" style={{ borderColor: color }}
             >
               <div className="flex items-start justify-between">
-                <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{o.drink.name}</p>
-                <span className="text-[10px]" style={{ color: '#666666' }}>{o.progress} / {o.drink.steps.length}</span>
+                <p className="text-[13px] font-bold" style={{ color: '#111111' }}>{o.drink.name}</p>
+                <span className="text-[10px]" style={{ color: '#555555' }}>{o.progress} / {o.drink.steps.length}</span>
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 {o.drink.steps.map((st, i) => (
                   <span key={i} className="rounded-pill px-2 py-0.5 text-[10px] font-bold"
-                    style={{
-                      background: i < o.progress ? '#C9DB8A' : i === o.progress ? '#FBBF24' : '#1A1A1C',
-                      color: i <= o.progress ? '#0F0F10' : '#FFFFFF',
-                    }}
-                  >
+                    style={{ background: i < o.progress ? '#C9D98A' : i === o.progress ? '#FDC55E' : '#1B1B1D', color: i <= o.progress ? '#111111' : '#FFFFFF' }}>
                     {st}
                   </span>
                 ))}
               </div>
-              <div className="mt-2"><ProgressBar value={pct} color={color} h={4} /></div>
+              <div className="mt-2"><ProgressBar value={pct} /></div>
             </motion.div>
           )
         })}
@@ -160,17 +153,12 @@ function Rush({ onExit, lang }: { onExit: () => void; lang: Lang }) {
         {rushStepsLegend.map((st) => (
           <button key={st} onClick={() => tap(st)}
             className="rounded-[24px] py-3 text-[12px] font-bold btn-press"
-            style={{
-              background: flash === 'bad' ? '#F8717133' : '#1A1A1C',
-              border: '1px solid #3A3A3D',
-              color: '#FFFFFF',
-            }}
-          >
+            style={{ background: flash === 'bad' ? '#EB5A5233' : '#1B1B1D', border: '1px solid #3A3A3D', color: '#FFFFFF' }}>
             {st}
           </button>
         ))}
       </div>
-      <p className="mt-2 text-left text-[11px]" style={{ color: '#666666' }}>
+      <p className="mt-2 text-left text-[11px]" style={{ color: '#555555' }}>
         Нажимайте шаги в порядке сборки. Ошибка = −2 сек терпения гостя. Обслуживайте самый горячий заказ!
       </p>
     </motion.div>
@@ -191,9 +179,9 @@ export default function Shift({ lang }: { lang: Lang }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="space-y-2"
       >
-        <p className="eyebrow">Смена · сервис и тайминг</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('shift.title_ru')}</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('shift.subtitle_ru')}</p>
+        <Eyebrow>Смена · сервис и тайминг</Eyebrow>
+        <H1>{L('shift.title_ru')}</H1>
+        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{L('shift.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -202,12 +190,8 @@ export default function Shift({ lang }: { lang: Lang }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
         className="no-scrollbar flex gap-2 overflow-x-auto"
       >
-        {([
-          ['model', 'Модель бара'],
-          ['standards', 'Стандарты времени'],
-          ['rush', 'Rush-симулятор'],
-        ] as const).map(([id, label]) => (
-          <Chip key={id} active={tab === id} onClick={() => { setTab(id); setRushOn(false) }}>{label}</Chip>
+        {(['model', 'standards', 'rush'] as const).map(([id, label]) => (
+          <Chip key={id} active={tab === id as typeof tab} onClick={() => { setTab(id as typeof tab); setRushOn(false) }}>{label}</Chip>
         ))}
       </motion.div>
 
@@ -218,9 +202,9 @@ export default function Shift({ lang }: { lang: Lang }) {
           transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
           className="space-y-6"
         >
-          <Card light className="space-y-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>5 принципов потока</h2>
-            <p className="eyebrow mb-2" style={{ color: '#8B5CF6' }}>Источник: калькуляции ТТК сети</p>
+          <CardLight className="space-y-4">
+            <H1 style={{ fontSize: 15 }}>5 принципов потока</H1>
+            <Eyebrow color="violet" style={{ marginBottom: 8 }}>Источник: калькуляции ТТК сети</Eyebrow>
             <div className="space-y-3">
               {[
                 { title: 'Одна линия — один поток', body: 'Заказ движется по одной линии: касса → стакан в очередь → шот → молоко → пасс. Каждая позиция делает только своё звено.' },
@@ -230,78 +214,76 @@ export default function Shift({ lang }: { lang: Lang }) {
                 { title: 'Стандарты времени публичны', body: 'Цифры перед глазами команды: капучино 90 секунд, полная очередь ≤ 4 минуты.' },
               ].map((p, i) => (
                 <div key={i} className="flex gap-3">
-                  <span className="font-display text-[18px] font-extrabold" style={{ color: '#FBBF24' }}>{i + 1}</span>
+                  <span className="font-display text-[18px] font-extrabold" style={{ color: '#FDC55E' }}>{i + 1}</span>
                   <div className="flex-1">
-                    <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{p.title}</p>
-                    <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#666666' }}>{p.body}</p>
+                    <p className="text-[13px] font-bold" style={{ color: '#111111' }}>{p.title}</p>
+                    <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#555555' }}>{p.body}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </Card>
+          </CardLight>
 
-          <Card light className="space-y-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Схема потока заказа</h2>
+          <CardLight className="space-y-4">
+            <H1 style={{ fontSize: 15 }}>Схема потока заказа</H1>
             <div className="mt-3 space-y-3">
               {serviceFlow.map((f, i) => (
                 <div key={f.n} className="flex gap-4">
                   <div className="flex flex-col items-center">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-bold"
-                      style={{ background: '#C9DB8A', color: '#0F0F10' }}>{f.n}</span>
+                      style={{ background: '#C9D98A', color: '#111111' }}>{f.n}</span>
                     {i < serviceFlow.length - 1 && <span className="w-px flex-1" style={{ background: '#3A3A3D' }} />}
                   </div>
                   <div className="pb-4">
                     <div className="flex flex-wrap items-start gap-2">
-                      <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{f.title}</p>
-                      <span className="text-[10px] font-bold" style={{ color: '#FBBF24' }}>{f.time}</span>
+                      <p className="text-[13px] font-bold" style={{ color: '#111111' }}>{f.title}</p>
+                      <span className="text-[10px] font-bold" style={{ color: '#FDC55E' }}>{f.time}</span>
                     </div>
-                    <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#666666' }}>{f.desc}</p>
+                    <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#555555' }}>{f.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </Card>
+          </CardLight>
 
-          <Card light className="space-y-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Позиции в пике</h2>
-            <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>В малой смене один человек совмещает позиции — но логика потока та же.</p>
+          <CardLight className="space-y-4">
+            <H1 style={{ fontSize: 15 }}>Позиции в пике</H1>
+            <p className="mt-1 text-[12px]" style={{ color: '#555555' }}>В малой смене один человек совмещает позиции — но логика потока та же.</p>
             <div className="mt-3 space-y-3">
               {barPositions.map((p) => (
-                <Card key={p.id} light className="space-y-3">
+                <CardLight key={p.id} className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{p.title} <span className="text-[10px] uppercase" style={{ color: '#666666' }}>· {p.en}</span></p>
-                      <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>{p.mission}</p>
+                      <p className="text-[13px] font-bold" style={{ color: '#111111' }}>{p.title} <span className="text-[10px] uppercase" style={{ color: '#555555' }}>· {p.en}</span></p>
+                      <p className="mt-0.5 text-[12px]" style={{ color: '#555555' }}>{p.mission}</p>
                     </div>
-                    <span className="text-[12px] font-bold" style={{ color: '#666666' }}>→</span>
+                    <span className="text-[12px] font-bold" style={{ color: '#555555' }}>→</span>
                   </div>
                   <ul className="space-y-1">
                     {p.duties.map((d, i) => (
-                      <li key={i} className="flex gap-2 text-[13px]" style={{ color: '#0F0F10' }}>
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: '#C9DB8A' }} />
+                      <li key={i} className="flex gap-2 text-[13px]" style={{ color: '#111111' }}>
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: '#C9D98A' }} />
                         {d}
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-2 rounded-[16px] p-2 text-[12px] font-bold" style={{ background: '#F8717122', color: '#F87171' }}>
-                    {p.rule}
-                  </p>
-                </Card>
+                  <p className="mt-2 rounded-[16px] p-2 text-[12px] font-bold" style={{ background: '#EB5A5222', color: '#EB5A52' }}>{p.rule}</p>
+                </CardLight>
               ))}
             </div>
-          </Card>
+          </CardLight>
 
-          <Card light className="space-y-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Секвенсинг: порядок запуска</h2>
+          <CardLight className="space-y-4">
+            <H1 style={{ fontSize: 15 }}>Секвенсинг: порядок запуска</H1>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {sequenceRules.map((r, i) => (
                 <div key={i} className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
-                  <p className="text-[13px] font-bold" style={{ color: '#C9DB8A' }}>{r.title}</p>
-                  <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#666666' }}>{r.desc}</p>
+                  <p className="text-[13px] font-bold" style={{ color: '#C9D98A' }}>{r.title}</p>
+                  <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#555555' }}>{r.desc}</p>
                 </div>
               ))}
             </div>
-          </Card>
+          </CardLight>
         </motion.div>
       )}
 
@@ -312,31 +294,31 @@ export default function Shift({ lang }: { lang: Lang }) {
           transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
           className="space-y-6"
         >
-          <Card light className="overflow-x-auto">
+          <CardLight className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-[13px]">
               <thead>
-                <tr style={{ background: '#1A1A1C' }}>
+                <tr style={{ background: '#1B1B1D' }}>
                   {['Напиток / метрика', 'Цель', 'Лимит', 'Ключ'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C9DB8A' }}>{h}</th>
+                    <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C9D98A' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {timeStandards.map((t, i) => (
                   <tr key={i} className="border-t" style={{ borderColor: '#3A3A3D' }}>
-                    <td className="px-4 py-3 font-bold" style={{ color: '#0F0F10' }}>{t.drink}</td>
-                    <td className="px-4 py-3 font-bold" style={{ color: '#FBBF24' }}>{t.target}</td>
-                    <td className="px-4 py-3 font-bold" style={{ color: '#F87171' }}>{t.limit}</td>
-                    <td className="px-4 py-3 text-[12px]" style={{ color: '#666666' }}>{t.note}</td>
+                    <td className="px-4 py-3 font-bold" style={{ color: '#111111' }}>{t.drink}</td>
+                    <td className="px-4 py-3 font-bold" style={{ color: '#FDC55E' }}>{t.target}</td>
+                    <td className="px-4 py-3 font-bold" style={{ color: '#EB5A52' }}>{t.limit}</td>
+                    <td className="px-4 py-3 text-[12px]" style={{ color: '#555555' }}>{t.note}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </Card>
+          </CardLight>
 
-          <Card light className="space-y-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Отраслевые ориентиры</h2>
-            <p className="eyebrow mb-2" style={{ color: '#FBBF24' }}>SCA: вода, экстракция, температура</p>
+          <CardLight className="space-y-4">
+            <H1 style={{ fontSize: 15 }}>Отраслевые ориентиры</H1>
+            <Eyebrow color="yellow" style={{ marginBottom: 8 }}>SCA: вода, экстракция, температура</Eyebrow>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {[
                 { id: 'golden-cup', title: 'Golden Cup', kicker: 'Фильтр · SCA', body: '55 г на 1 л ≈ 1:18 ±10% · TDS 1,15–1,35% · экстракция 18–22% · вода 90–96 °C.' },
@@ -344,13 +326,13 @@ export default function Shift({ lang }: { lang: Lang }) {
                 { id: 'milk', title: 'Молоко', kicker: 'Микропена', body: 'Температура 55–65 °C, не выше 70 °C. Капучино — плотнее, латте — без шапки, флэт — минимум пены.' },
               ].map((g) => (
                 <div key={g.id} className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
-                  <p className="eyebrow" style={{ color: '#FBBF24' }}>{g.kicker}</p>
-                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{g.title}</h3>
-                  <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#666666' }}>{g.body}</p>
+                  <Eyebrow color="yellow">{g.kicker}</Eyebrow>
+                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{g.title}</h3>
+                  <p className="mt-1 text-[12px] leading-relaxed" style={{ color: '#555555' }}>{g.body}</p>
                 </div>
               ))}
             </div>
-          </Card>
+          </CardLight>
         </motion.div>
       )}
 
@@ -373,22 +355,20 @@ export default function Shift({ lang }: { lang: Lang }) {
               <Rush onExit={() => setRushOn(false)} lang={lang} />
             </>
           ) : (
-            <Card light className="p-8 text-center">
-              <p className="eyebrow" style={{ color: '#F87171' }}>Тренажёр потока</p>
-              <h2 className="font-display mt-2 text-[22px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{L('shift.rush_title_ru')}</h2>
-              <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed" style={{ color: '#666666' }}>
-                {L('shift.rush_desc_ru')}
-              </p>
-              <p className="mt-4 text-[13px] font-bold" style={{ color: '#C9DB8A' }}>Рекорд: {s.rushBest} гостей</p>
+            <CardLight className="p-8 text-center">
+              <Eyebrow color="coral">Тренажёр потока</Eyebrow>
+              <h2 className="font-display mt-2 text-[22px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{L('shift.rush_title_ru')}</h2>
+              <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed" style={{ color: '#555555' }}>{L('shift.rush_desc_ru')}</p>
+              <p className="mt-4 text-[13px] font-bold" style={{ color: '#C9D98A' }}>Рекорд: {s.rushBest} гостей</p>
               <motion.button onClick={() => setRushOn(true)}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 className="mt-6 rounded-[26px] px-10 py-4 text-[13px] font-extrabold uppercase btn-press"
-                style={{ background: '#F87171', color: '#0F0F10', height: 52 }}
+                style={{ background: '#EB5A52', color: '#111111', height: 52 }}
               >
                 {L('shift.start_ru')}
               </motion.button>
-            </Card>
+            </CardLight>
           )}
         </motion.div>
       )}

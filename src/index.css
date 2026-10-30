@@ -18,8 +18,8 @@
   }
   button { font-family: inherit; border: none; background: none; cursor: pointer; }
   a { color: inherit; text-decoration: none; }
-  ::selection { background: #C9DB8A; color: #0F0F10; }
-  *:focus-visible { outline: 3px solid #C9DB8A; outline-offset: 3px; }
+  ::selection { background: #C9D98A; color: #0F0F10; }
+  *:focus-visible { outline: 3px solid #C9D98A; outline-offset: 3px; }
   h1, h2, h3, h4 { font-family: 'Unbounded', 'Manrope', sans-serif; font-weight: 800; text-transform: uppercase; margin: 0; }
   h1 { font-size: 28px; line-height: 1.15; }
   h2 { font-size: 25px; line-height: 1.15; }
@@ -31,7 +31,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: #C9DB8A;
+    color: #C9D98A;
     margin: 0;
   }
   .font-display { font-family: 'Unbounded', 'Manrope', sans-serif; }
@@ -47,20 +47,21 @@
   .btn-selected {
     box-shadow: inset -6px -6px 12px rgba(0,0,0,0.9);
   }
-  .shadow-outer { box-shadow: 0 20px 40px rgba(139, 92, 246, 0.35); }
+  .shadow-outer { box-shadow: 0 20px 40px rgba(91, 63, 240, 0.35); }
   .shadow-card { box-shadow: 0 12px 32px rgba(0,0,0,0.55); }
 }
 
 @layer utilities {
-  .text-ink { color: #FFFFFF; }
+  .text-ink { color: #111111; }
   .bg-ink { background: #111111; color: #FFFFFF; }
-  .bg-surface { background: #1A1A1C; color: #FFFFFF; }
+  .bg-surface { background: #E8E6DF; color: #111111; }
   .bg-white { background: #FFFFFF; color: #0F0F10; }
-  .text-lime { color: #C9DB8A; }
-  .text-purple { color: #8B5CF6; }
-  .text-yellow { color: #FBBF24; }
-  .text-coral { color: #F87171; }
-  .text-muted { color: #A9A9AE; }
+  .text-lime { color: #C9D98A; }
+  .text-violet { color: #5B3FF0; }
+  .text-yellow { color: #FDC55E; }
+  .text-coral { color: #EB5A52; }
+  .text-plum { color: #523E80; }
+  .text-muted { color: #555555; }
 }
 
 /* Logo watermark — subtle, behind content */

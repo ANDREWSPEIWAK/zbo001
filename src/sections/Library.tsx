@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { t, type Lang } from '../lang'
 import { libraryTopics, libraryItems, type LibraryTopic } from '../data/library'
-import { Card, Button } from '../components/app-ui'
+import { Eyebrow, H1, CardLight } from '../components/app-ui'
 
 export default function Library({ lang }: { lang: Lang }) {
   const L = (key: string) => t(key, lang)
@@ -23,9 +23,9 @@ export default function Library({ lang }: { lang: Lang }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
-        <p className="eyebrow" style={{ color: '#8B5CF6' }}>{open.kicker}</p>
-        <h1 className="font-display mt-1 text-[25px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{open.title}</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{open.blurb}</p>
+        <Eyebrow color="violet">{open.kicker}</Eyebrow>
+        <h1 className="font-display mt-1 text-[25px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{open.title}</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{open.blurb}</p>
       </motion.div>
       <div className="space-y-4">
         {(open.lessonIds ?? []).map((lid) => {
@@ -38,25 +38,25 @@ export default function Library({ lang }: { lang: Lang }) {
               className="space-y-3"
               style={{ animationDelay: '50ms' }}
             >
-              <Card light className="space-y-3">
+              <CardLight className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="eyebrow" style={{ color: '#C9DB8A' }}>{item.kind}</p>
-                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{item.title}</h3>
-                    <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{item.duration}</p>
+                    <Eyebrow color="yellow">{item.kind}</Eyebrow>
+                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{item.title}</h3>
+                    <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#555555' }}>{item.duration}</p>
                   </div>
-                  <span className="text-[12px] font-bold" style={{ color: '#FBBF24' }}>→</span>
+                  <span className="text-[12px] font-bold" style={{ color: '#FDC55E' }}>→</span>
                 </div>
-                <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{item.summary}</p>
+                <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{item.summary}</p>
                 {item.recipe && (
                   <div className="mt-3 rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                    <p className="eyebrow mb-1" style={{ color: '#8B5CF6' }}>Рецепт</p>
+                    <Eyebrow color="violet" style={{ marginBottom: 4 }}>Рецепт</Eyebrow>
                     <table className="w-full text-[12px]">
                       <tbody>
                         {item.recipe.rows.map((row, i) => (
                           <tr key={i} className={i > 0 ? 'border-t' : ''} style={{ borderColor: '#3A3A3D' }}>
-                            <td className="px-3 py-1" style={{ color: '#666666' }}>{row[0]}</td>
-                            <td className="px-3 py-1 text-right font-bold" style={{ color: '#0F0F10' }}>{row[1]}</td>
+                            <td className="px-3 py-1" style={{ color: '#555555' }}>{row[0]}</td>
+                            <td className="px-3 py-1 text-right font-bold" style={{ color: '#111111' }}>{row[1]}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -67,14 +67,14 @@ export default function Library({ lang }: { lang: Lang }) {
                   {item.youtube && (
                     <a href={`https://youtu.be/${item.youtube.id}`} target="_blank" rel="noopener noreferrer"
                       className="flex-1 rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press"
-                      style={{ background: '#1A1A1C', color: '#FFFFFF', height: 44 }}
+                      style={{ background: '#1B1B1D', color: '#FFFFFF', height: 44 }}
                     >
                       Видео: {item.youtube.title}
                     </a>
                   )}
-                  <Button variant="ghost" className="flex-1" style={{ height: 44, padding: '0 12px', fontSize: '11px' }}>{L('library.open_lesson_ru')}</Button>
+                  <button className="flex-1" style={{ height: 44, padding: '0 12px', fontSize: '11px' }}>{L('library.open_lesson_ru')}</button>
                 </div>
-              </Card>
+              </CardLight>
             </motion.div>
           )
         })}
@@ -90,9 +90,9 @@ export default function Library({ lang }: { lang: Lang }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="space-y-2"
       >
-        <p className="eyebrow">Методика сети</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('library.title_ru')}</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{libraryTopics.length} тем: латте-арт, фильтр, сервис, сенсорика и другое.</p>
+        <Eyebrow>Методика сети</Eyebrow>
+        <H1>{L('library.title_ru')}</H1>
+        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>{libraryTopics.length} тем: латте-арт, фильтр, сервис, сенсорика и другое.</p>
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -104,15 +104,15 @@ export default function Library({ lang }: { lang: Lang }) {
           <motion.button key={t.id} onClick={() => setOpen(t)}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            className="rounded-card bg-surface p-5 flex flex-col"
+            className="CardLight p-5 flex flex-col"
             style={{ animationDelay: `${i * 50}ms` }}
           >
-            <div className="flex h-20 w-full items-center justify-center rounded-[24px] mb-4" style={{ background: '#1A1A1C', border: '1px solid #3A3A3D' }}>
+            <div className="flex h-20 w-full items-center justify-center rounded-[24px] mb-4" style={{ background: '#1B1B1D', border: '1px solid #3A3A3D' }}>
               <span className="text-[24px]">{t.id === 'latte' ? '☕' : t.id === 'v60' || t.id === 'kalita' || t.id === 'aeropress' || t.id === 'coldbrew' ? '🫘' : t.id === 'service' || t.id === 'bar' ? '🤝' : t.id === 'sensory' ? '👃' : t.id === 'roast' ? '🔥' : '📖'}</span>
             </div>
-            <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{t.title}</h3>
-            <p className="mt-1 text-[12px] font-bold" style={{ color: '#C9DB8A' }}>{t.kicker}</p>
-            <p className="mt-auto text-[12px] leading-relaxed" style={{ color: '#666666' }}>{t.blurb}</p>
+            <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{t.title}</h3>
+            <p className="mt-1 text-[12px] font-bold" style={{ color: '#C9D98A' }}>{t.kicker}</p>
+            <p className="mt-auto text-[12px] leading-relaxed" style={{ color: '#555555' }}>{t.blurb}</p>
           </motion.button>
         ))}
       </motion.div>
