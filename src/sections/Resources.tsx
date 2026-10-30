@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { t, type Lang } from '../lang'
 import { CardLight } from '../components/app-ui'
 
-export interface Resource {
+interface Resource {
   id: string
   title: string
   url: string
@@ -13,7 +13,7 @@ export interface Resource {
   checked: boolean
 }
 
-export const resources: Resource[] = [
+const resources: Resource[] = [
   {
     id: 'sca-barista',
     title: 'SCA Coffee Skills Program — Barista Skills',

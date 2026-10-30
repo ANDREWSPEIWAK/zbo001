@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
 import { t, type Lang } from '../lang'
@@ -31,14 +30,14 @@ export default function Path({ lang }: { lang: Lang }) {
   }, [])
   const greeting = L(greetingKey)
 
-  const nextModule = useMemo(() => {
+  const nextModule = (() => {
     for (const lv of levels) {
       for (const m of modules.filter((m) => m.levelId === lv.id)) {
         if (!s.modulesDone[m.id]) return { lv, m }
       }
     }
     return null
-  }, [s.modulesDone])
+  })()
 
   const blocks = [
     { id: 'ttk', title: L('path.block_ttk_ru'), value: `${knownCount}`, total: `${totalTtk}`, color: 'lime' },
@@ -117,7 +116,7 @@ export default function Path({ lang }: { lang: Lang }) {
                 <Eyebrow color="violet">{b.title}</Eyebrow>
                 <p className="font-display mt-0.5 text-[13px] font-extrabold tnum" style={{ color: '#111111' }}>{b.value} / {b.total}</p>
               </div>
-              <ProgressRing value={(parseInt(b.value) / parseInt(b.total)) * 100} size={48} color={b.color as any} stroke={5}>
+              <ProgressRing value={(parseInt(b.value) / parseInt(b.total)) * 100} size={48} color={b.color as string} stroke={5}>
                 <span className="text-[10px] font-bold tnum" style={{ color: '#111111' }}>{Math.round((parseInt(b.value) / parseInt(b.total)) * 100)}%</span>
               </ProgressRing>
             </div>

@@ -453,5 +453,6 @@ export const DICTIONARY: Record<string, string> = {
 }
 
 export function t(_key: string, _lang: Lang): string {
+  void _lang
   return DICTIONARY[_key] || _key
 }

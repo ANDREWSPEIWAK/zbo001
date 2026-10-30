@@ -17,16 +17,14 @@ const ROLES: { id: string; labelRu: string; labelEn: string }[] = [
 ]
 
 export default function AuthScreen({ onAuth }: { onAuth: () => void }) {
-  const [lang, setLang] = useState<Lang>('ru')
+  const [lang, setLang] = useState<Lang>(() => {
+    const saved = localStorage.getItem('202f-lang')
+    if (saved === 'ru' || saved === 'en') return saved
+    return 'ru'
+  })
   const [mode, setMode] = useState<AuthMode>('welcome')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  // Load saved language
-  useEffect(() => {
-    const saved = localStorage.getItem('202f-lang') as Lang | null
-    if (saved && (saved === 'ru' || saved === 'en')) setLang(saved)
-  }, [])
 
   useEffect(() => {
     localStorage.setItem('202f-lang', lang)

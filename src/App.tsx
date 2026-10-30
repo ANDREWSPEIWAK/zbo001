@@ -47,16 +47,20 @@ export default function App() {
   const [tab, setTab] = useState<AppTab>('path')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
-  const [lang, setLang] = useState<Lang>('ru')
-  const [authed, setAuthed] = useState(false)
+  const [lang, setLang] = useState<Lang>(() => {
+    const saved = localStorage.getItem('202f-lang')
+    if (saved === 'ru' || saved === 'en') return saved
+    return 'ru'
+  })
+  const [authed, setAuthed] = useState(() => {
+    return s.xp > 0 || Object.keys(s.known).length > 0 || s.days.length > 0
+  })
   const r = rankFor(s.xp)
 
   useEffect(() => {
-    const saved = localStorage.getItem('202f-lang') as Lang | null
-    if (saved && (saved === 'ru' || saved === 'en')) setLang(saved)
-    const hasProgress = s.xp > 0 || Object.keys(s.known).length > 0 || s.days.length > 0
-    if (hasProgress) setAuthed(true)
-  }, [])
+    localStorage.setItem('202f-lang', lang)
+    document.documentElement.lang = lang
+  }, [lang])
 
   useEffect(() => {
     localStorage.setItem('202f-lang', lang)
