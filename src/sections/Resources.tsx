@@ -76,27 +76,27 @@ export default function Resources() {
       <div className="anim-rise">
         <p className="eyebrow">Ресурсы · путь развития</p>
         <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Ресурсы</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
+        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
           Проверенные ссылки по развитию в спешелти и сервисе. Каждая ссылка открыта и проверена вручную. Пометка «проверено» с датой.
         </p>
       </div>
 
       <div className="space-y-3">
         {resources.map((r) => {
-          const badgeBg = r.checked ? 'bg-[#C9DB8A]' : 'bg-[#1B1B1D]'
+          const badgeBg = r.checked ? 'bg-[#C9DB8A]' : 'bg-[#1A1A1C]'
           const badgeText = r.checked ? `проверено ${r.checkedDate}` : 'проверить'
           return (
             <Card key={r.id} light className="space-y-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="eyebrow" style={{ color: '#5B45F0' }}>{r.level}</p>
-                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{r.title}</h3>
+                  <p className="eyebrow" style={{ color: '#8B5CF6' }}>{r.level}</p>
+                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{r.title}</h3>
                 </div>
-                <span className={`rounded-[22px] px-3 py-1 text-[11px] font-bold ${badgeBg}`} style={{ color: r.checked ? '#111111' : '#FFFFFF' }}>
+                <span className={`rounded-[22px] px-3 py-1 text-[11px] font-bold ${badgeBg}`} style={{ color: r.checked ? '#FFFFFF' : '#FFFFFF' }}>
                   {badgeText}
                 </span>
               </div>
-              <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{r.why}</p>
+              <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#FFFFFF' }}>{r.why}</p>
               <div className="mt-3 flex items-center gap-2">
                 <Button
                   variant="ghost"
@@ -106,7 +106,7 @@ export default function Resources() {
                 >
                   Открыть ссылку
                 </Button>
-                <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold" style={{ color: '#EE5A55' }}>
+                <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold" style={{ color: '#F87171' }}>
                   ↗ в новой вкладке
                 </a>
               </div>
@@ -118,10 +118,10 @@ export default function Resources() {
       {open && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center" style={{ background: 'rgba(18,18,18,0.8)' }} onClick={() => setOpen(null)}>
           <Card light className="p-4">
-            <div className="rounded-[32px] p-5 max-w-md w-full" style={{ background: '#E8E6E1', color: '#111111' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-              <p className="eyebrow" style={{ color: '#5B45F0' }}>Переход на внешний ресурс</p>
-              <p className="mt-1 text-[13px] font-bold" style={{ color: '#111111' }}>{open}</p>
-              <p className="mt-2 text-[12px]" style={{ color: '#555555' }}>Ссылка откроется в новой вкладке браузера.</p>
+            <div className="rounded-[32px] p-5 max-w-md w-full" style={{ background: '#1A1A1C', color: '#FFFFFF' }} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <p className="eyebrow" style={{ color: '#8B5CF6' }}>Переход на внешний ресурс</p>
+              <p className="mt-1 text-[13px] font-bold" style={{ color: '#FFFFFF' }}>{open}</p>
+              <p className="mt-2 text-[12px]" style={{ color: '#666666' }}>Ссылка откроется в новой вкладке браузера.</p>
               <Button variant="secondary" onClick={() => setOpen(null)} className="mt-4 w-full" style={{ height: 44 }}>Понятно</Button>
             </div>
           </Card>

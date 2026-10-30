@@ -31,8 +31,8 @@ export default function Path() {
   const blocks = [
     { id: 'ttk', title: 'ТТК', value: `${knownCount}/79`, color: '#C9DB8A' },
     { id: 'lessons', title: 'Методики', value: `${Object.values(s.lessonsRead).filter(Boolean).length}/31`, color: '#C9DB8A' },
-    { id: 'exam', title: 'Экзамен', value: `${Object.values(s.examKnown).filter(Boolean).length}/40`, color: '#FBC85F' },
-    { id: 'badges', title: 'Бейджи', value: `${s.earnedBadges.length}/${badges.length}`, color: '#FBC85F' },
+    { id: 'exam', title: 'Экзамен', value: `${Object.values(s.examKnown).filter(Boolean).length}/40`, color: '#FBBF24' },
+    { id: 'badges', title: 'Бейджи', value: `${s.earnedBadges.length}/${badges.length}`, color: '#FBBF24' },
   ]
 
   const continueTarget = nextModule
@@ -49,28 +49,28 @@ export default function Path() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <ProgressRing value={r.next ? (r.into / r.span) * 100 : 100} size={80} color="#FBC85F" stroke={6}>
-            <span className="font-display text-[14px] font-extrabold tnum" style={{ color: '#111111' }}>{s.xp}</span>
+          <ProgressRing value={r.next ? (r.into / r.span) * 100 : 100} size={80} color="#FBBF24" stroke={6}>
+            <span className="font-display text-[14px] font-extrabold tnum" style={{ color: '#0F0F10' }}>{s.xp}</span>
           </ProgressRing>
           <div>
-            <p className="font-display text-[16px] font-extrabold" style={{ color: '#FBC85F' }}>{r.current.title}</p>
-            {r.next && <p className="text-[11px] font-bold tnum" style={{ color: '#555555' }}>до «{r.next.title}» {r.next.xp - s.xp} XP</p>}
+            <p className="font-display text-[16px] font-extrabold" style={{ color: '#FBBF24' }}>{r.current.title}</p>
+            {r.next && <p className="text-[11px] font-bold tnum" style={{ color: '#666666' }}>до «{r.next.title}» {r.next.xp - s.xp} XP</p>}
           </div>
         </div>
       </div>
 
       {/* Продолжить — главный шаг */}
-      <Card light accent="#FBC85F" className="space-y-3">
+      <Card light accent="#FBBF24" className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="eyebrow" style={{ color: '#5B45F0' }}>Что сделать сейчас</p>
-            <h2 className="font-display mt-1 text-[20px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>
+            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Что сделать сейчас</p>
+            <h2 className="font-display mt-1 text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
               Продолжить {continueTarget.id ? '«' + continueTarget.label + '»' : ''}
             </h2>
-            <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#555555' }}>{continueTarget.subtitle}</p>
+            <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{continueTarget.subtitle}</p>
           </div>
           <ProgressRing value={r.next ? (r.into / r.span) * 100 : 100} size={44} color="#C9DB8A" stroke={4}>
-            <span className="text-[9px] font-bold tnum" style={{ color: '#111111' }}>{Math.round((r.next ? (r.into / r.span) * 100 : 100))}%</span>
+            <span className="text-[9px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((r.next ? (r.into / r.span) * 100 : 100))}%</span>
           </ProgressRing>
         </div>
         {continueTarget.id && (
@@ -89,11 +89,11 @@ export default function Path() {
           <Card key={b.id} light className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="eyebrow" style={{ color: '#5B45F0' }}>{b.title}</p>
-                <p className="font-display mt-0.5 text-[13px] font-extrabold tnum" style={{ color: '#111111' }}>{b.value}</p>
+                <p className="eyebrow" style={{ color: '#8B5CF6' }}>{b.title}</p>
+                <p className="font-display mt-0.5 text-[13px] font-extrabold tnum" style={{ color: '#0F0F10' }}>{b.value}</p>
               </div>
               <ProgressRing value={(parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100} size={48} color={b.color} stroke={5}>
-                <span className="text-[10px] font-bold tnum" style={{ color: '#111111' }}>{Math.round((parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100)}%</span>
+                <span className="text-[10px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100)}%</span>
               </ProgressRing>
             </div>
             <div className="mt-2"><ProgressBar value={(parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100} color={b.color} h={5} /></div>
@@ -105,23 +105,23 @@ export default function Path() {
       <div className="rounded-card bg-surface overflow-hidden anim-rise">
         <div className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#111111' }}>Квесты дня</h2>
-            <Pill color="#FBC85F">обновятся завтра</Pill>
+            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Квесты дня</h2>
+            <Pill color="#FBBF24">обновятся завтра</Pill>
           </div>
           <div className="space-y-3">
             {quests.map((q) => (
               <div key={q.id} className="flex items-center gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className={`text-[13px] font-bold ${q.done ? 'line-through opacity-50' : ''}`} style={{ color: '#111111' }}>{q.title}</p>
-                    <span className="text-[11px] font-bold tnum" style={{ color: q.done ? '#C9DB8A' : '#555555' }}>
+                    <p className={`text-[13px] font-bold ${q.done ? 'line-through opacity-50' : ''}`} style={{ color: '#0F0F10' }}>{q.title}</p>
+                    <span className="text-[11px] font-bold tnum" style={{ color: q.done ? '#C9DB8A' : '#666666' }}>
                       {q.progress}/{q.target} · +{q.xp} XP
                     </span>
                   </div>
-                  <div className="mt-1"><ProgressBar value={(q.progress / q.target) * 100} color={q.done ? '#C9DB8A' : '#FBC85F'} h={5} /></div>
+                  <div className="mt-1"><ProgressBar value={(q.progress / q.target) * 100} color={q.done ? '#C9DB8A' : '#FBBF24'} h={5} /></div>
                 </div>
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px] font-bold"
-                  style={{ background: q.done ? '#C9DB8A' : '#1B1B1D', color: q.done ? '#111111' : '#FFFFFF' }}>
+                  style={{ background: q.done ? '#C9DB8A' : '#1A1A1C', color: q.done ? '#0F0F10' : '#FFFFFF' }}>
                   {q.done ? '✓' : '·'}
                 </div>
               </div>
@@ -144,22 +144,22 @@ export default function Path() {
                 <div className="p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="eyebrow" style={{ color: '#5B45F0' }}>Уровень {lv.n} · {lv.duration}</p>
-                      <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>
+                      <p className="eyebrow" style={{ color: '#8B5CF6' }}>Уровень {lv.n} · {lv.duration}</p>
+                      <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
                         {lv.title}
                       </h3>
-                      <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#555555' }}>{lv.tagline}</p>
+                      <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{lv.tagline}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-display text-[14px] font-extrabold tnum" style={{ color: xpLocked ? '#EE5A55' : '#C9DB8A' }}>
+                      <p className="font-display text-[14px] font-extrabold tnum" style={{ color: xpLocked ? '#F87171' : '#C9DB8A' }}>
                         {xpLocked ? `закр. при ${lv.id === 'skilled' ? 200 : 600} XP` : Math.round(pct) + '%'}
                       </p>
                     </div>
                   </div>
-                  <div className="mt-3"><ProgressBar value={pct} color={pct === 100 ? '#C9DB8A' : '#FBC85F'} h={5} /></div>
+                  <div className="mt-3"><ProgressBar value={pct} color={pct === 100 ? '#C9DB8A' : '#FBBF24'} h={5} /></div>
                 </div>
                 {!xpLocked && (
-                  <div className="border-t border-solid border-[#CFCCC4] pt-4 space-y-2">
+                  <div className="border-t border-solid border-[#3A3A3D] pt-4 space-y-2">
                     {mods.map((m) => {
                       const done = !!s.modulesDone[m.id]
                       return (
@@ -171,15 +171,15 @@ export default function Path() {
                           style={{
                             height: 44,
                             background: done ? '#C9DB8A' : 'transparent',
-                            color: done ? '#111111' : '#FFFFFF',
-                            border: done ? 'none' : '1px solid #2A2A2D',
+                            color: done ? '#0F0F10' : '#FFFFFF',
+                            border: done ? 'none' : '1px solid #3A3A3D',
                             fontSize: '12px',
                             padding: '0 12px',
                             justifyContent: 'space-between',
                           }}
                         >
                           <span>{m.title}</span>
-                          <span style={{ color: done ? '#111111' : '#FBC85F' }}>{done ? '✓' : '→'}</span>
+                          <span style={{ color: done ? '#0F0F10' : '#FBBF24' }}>{done ? '✓' : '→'}</span>
                         </Button>
                       )
                     })}
@@ -187,10 +187,10 @@ export default function Path() {
                       variant="ghost"
                       onClick={() => {}}
                       className="text-left justify-between"
-                      style={{ height: 44, border: '1px solid #2A2A2D', color: '#EE5A55', fontSize: '12px', padding: '0 12px', justifyContent: 'space-between' }}
+                      style={{ height: 44, border: '1px solid #3A3A3D', color: '#F87171', fontSize: '12px', padding: '0 12px', justifyContent: 'space-between' }}
                     >
                       <span>{attestations[lv.id]?.title}</span>
-                      <span style={{ color: '#EE5A55' }}>проверяет наставник</span>
+                      <span style={{ color: '#F87171' }}>проверяет наставник</span>
                     </Button>
                   </div>
                 )}
@@ -200,7 +200,7 @@ export default function Path() {
         </div>
       </div>
 
-      <div className="text-center text-[11px]" style={{ color: '#555555' }}>
+      <div className="text-center text-[11px]" style={{ color: '#666666' }}>
         Источник норм и времени: калькуляции ТТК сети. Прогресс хранится только в этом браузере.
       </div>
     </div>

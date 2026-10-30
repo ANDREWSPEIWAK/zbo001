@@ -4,21 +4,27 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: '#121212',
-        surface: '#E8E6E1',
-        surface2: '#FFFFFF',
-        border: '#CFCCC4',
-        borderSoft: '#E0DDD3',
-        ink: '#111111',
-        muted: '#555555',
-        lime: '#C9DB8A',
-        limeDark: '#B4C86E',
-        purple: '#5B45F0',
-        purpleDark: '#4F3F7F',
-        yellow: '#FBC85F',
-        coral: '#EE5A55',
-        coralDark: '#C94844',
-        shadowPurple: 'rgba(91, 69, 240, 0.35)',
+        /* Brand palette — vibrant, high-contrast, no same-on-same */
+        bg: '#0F0F10',            /* deep near-black background */
+        surface: '#1A1A1C',       /* dark surface, slightly lighter than bg */
+        surface2: '#2A2A2D',      /* elevated dark surface */
+        border: '#3A3A3D',        /* subtle border */
+        borderSoft: '#4A4A4D',    /* softer border */
+        ink: '#FFFFFF',           /* primary text on dark */
+        muted: '#A9A9AE',         /* secondary text */
+        lime: '#C9DB8A',          /* light green (only on dark bg) */
+        limeDark: '#8FA55E',      /* darker lime for text on lime */
+        purple: '#8B5CF6',        /* vibrant brand purple */
+        purpleDark: '#6D28D9',    /* deeper purple */
+        purpleBg: '#2E1A47',      /* dark purple panel bg (not same as purple text) */
+        yellow: '#FBBF24',        /* warm yellow/gold */
+        yellowDark: '#B45309',    /* dark gold for text on yellow */
+        coral: '#F87171',         /* vibrant coral/red */
+        coralDark: '#B91C1C',     /* dark red for text on coral */
+        shadowPurple: 'rgba(139, 92, 246, 0.45)',
+        shadowLime: 'rgba(201, 219, 138, 0.3)',
+        shadowYellow: 'rgba(251, 191, 36, 0.3)',
+        shadowCoral: 'rgba(248, 113, 113, 0.35)',
       },
       fontFamily: {
         display: ['Unbounded', 'Manrope', 'sans-serif'],
@@ -46,15 +52,17 @@ module.exports = {
         gap: '12px',
       },
       boxShadow: {
-        press: 'inset 3px 3px 6px rgba(0,0,0,0.4)',
-        selected: 'inset -5px -5px 10px rgba(0,0,0,0.7)',
-        outer: '0 10px 30px rgba(91, 69, 240, 0.35)',
-        outerLime: '0 10px 30px rgba(201, 219, 138, 0.25)',
-        outerYellow: '0 10px 30px rgba(251, 200, 95, 0.25)',
-        outerCoral: '0 10px 30px rgba(238, 90, 85, 0.25)',
+        press: 'inset 3px 3px 6px rgba(0,0,0,0.5)',
+        selected: 'inset -5px -5px 10px rgba(0,0,0,0.8)',
+        outer: '0 20px 40px rgba(139, 92, 246, 0.35)',
+        outerLime: '0 20px 40px rgba(201, 219, 138, 0.3)',
+        outerYellow: '0 20px 40px rgba(251, 191, 36, 0.3)',
+        outerCoral: '0 20px 40px rgba(248, 113, 113, 0.35)',
+        card: '0 12px 32px rgba(0,0,0,0.5)',
       },
       transition: {
-        spring: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        spring: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        smooth: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       },
     },
   },

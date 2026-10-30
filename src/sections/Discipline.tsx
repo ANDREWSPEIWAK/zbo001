@@ -4,7 +4,7 @@ import { Card, Button, Chip, ChecklistRow } from '../components/app-ui'
 
 function levelChip(lvl: { label: string; color: string }) {
   const bg =
-    lvl.color === '#EB5A52' ? 'bg-[#EB5A5522]' : lvl.color === '#FDC55E' ? 'bg-[#FBC85F22]' : 'bg-[#C9DB8A22]'
+    lvl.color === '#F87171' ? 'bg-[#F8717122]' : lvl.color === '#FBBF24' ? 'bg-[#FBBF2422]' : 'bg-[#C9DB8A22]'
   return (
     <span className={`rounded-[22px] px-3 py-1 text-[11px] font-bold ${bg}`} style={{ color: lvl.color }}>
       {lvl.label}
@@ -13,8 +13,8 @@ function levelChip(lvl: { label: string; color: string }) {
 }
 
 function levelText(level: 'critical' | 'major' | 'minor') {
-  if (level === 'critical') return 'text-[#EE5A55]'
-  if (level === 'major') return 'text-[#FBC85F]'
+  if (level === 'critical') return 'text-[#F87171]'
+  if (level === 'major') return 'text-[#FBBF24]'
   return 'text-[#C9DB8A]'
 }
 
@@ -26,7 +26,7 @@ export default function Discipline() {
       <div className="anim-rise">
         <p className="eyebrow">Дисциплина сети</p>
         <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Дисциплина</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
+        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
           Правила, нарушения стандартов и способы исправления — только из внутренних документов сети.
         </p>
       </div>
@@ -45,19 +45,19 @@ export default function Discipline() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     {levelChip(lvl)}
-                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{r.title}</h3>
+                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{r.title}</h3>
                   </div>
                   <span className={`text-[11px] font-bold ${levelText(r.level)}`}>{r.level}</span>
                 </div>
-                <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{r.rule}</p>
+                <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#FFFFFF' }}>{r.rule}</p>
                 <div className="mt-3 grid gap-2">
-                  <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                    <p className="eyebrow mb-1" style={{ color: '#5B45F0' }}>Почему это важно</p>
-                    <p className="text-[12px] leading-relaxed" style={{ color: '#111111' }}>{r.why}</p>
+                  <div className="rounded-[20px] p-3" style={{ background: '#1A1A1C' }}>
+                    <p className="eyebrow mb-1" style={{ color: '#8B5CF6' }}>Почему это важно</p>
+                    <p className="text-[12px] leading-relaxed" style={{ color: '#FFFFFF' }}>{r.why}</p>
                   </div>
-                  <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                    <p className="eyebrow mb-1" style={{ color: '#EE5A55' }}>Как исправлять</p>
-                    <p className="text-[12px] leading-relaxed" style={{ color: '#111111' }}>{r.how}</p>
+                  <div className="rounded-[20px] p-3" style={{ background: '#1A1A1C' }}>
+                    <p className="eyebrow mb-1" style={{ color: '#F87171' }}>Как исправлять</p>
+                    <p className="text-[12px] leading-relaxed" style={{ color: '#FFFFFF' }}>{r.how}</p>
                   </div>
                 </div>
               </Card>
@@ -72,8 +72,8 @@ export default function Discipline() {
             <Card key={cl.id} light className="space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="eyebrow" style={{ color: '#5B45F0' }}>{cl.kicker}</p>
-                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{cl.title}</h3>
+                  <p className="eyebrow" style={{ color: '#8B5CF6' }}>{cl.kicker}</p>
+                  <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{cl.title}</h3>
                 </div>
               </div>
               <div className="mt-3 space-y-1">

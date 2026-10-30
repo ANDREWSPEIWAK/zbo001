@@ -26,7 +26,7 @@ export default function Standards() {
       <div className="anim-rise">
         <p className="eyebrow">Стандарты сети · чек-листы</p>
         <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Стандарты и чек-листы</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
+        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
           Стандарты сервиса, подачи, гигиены и работы на баре с привязкой к уровням. Чек-листы закрываются с датой и временем.
         </p>
       </div>
@@ -51,10 +51,10 @@ export default function Standards() {
             <Card key={st.id} light accent="#C9DB8A" className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="eyebrow" style={{ color: '#C9DB8A' }}>{st.kicker}</p>
-                <Pill color="#5B45F0">Все уровни</Pill>
+                <Pill color="#8B5CF6">Все уровни</Pill>
               </div>
-              <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{st.title}</h3>
-              <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{st.body}</p>
+              <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{st.title}</h3>
+              <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#FFFFFF' }}>{st.body}</p>
             </Card>
           ))}
         </div>
@@ -70,15 +70,15 @@ export default function Standards() {
               <Card key={cl.id} light className="space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="eyebrow" style={{ color: '#5B45F0' }}>{cl.kicker}</p>
-                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{cl.title}</h3>
+                    <p className="eyebrow" style={{ color: '#8B5CF6' }}>{cl.kicker}</p>
+                    <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{cl.title}</h3>
                   </div>
                   <div className="text-right">
-                    <p className="font-display text-[14px] font-extrabold tnum" style={{ color: '#111111' }}>{pct}%</p>
-                    <p className="text-[11px] font-bold" style={{ color: '#555555' }}>{done.size}/{cl.items.length}</p>
+                    <p className="font-display text-[14px] font-extrabold tnum" style={{ color: '#FFFFFF' }}>{pct}%</p>
+                    <p className="text-[11px] font-bold" style={{ color: '#666666' }}>{done.size}/{cl.items.length}</p>
                   </div>
                 </div>
-                <div className="mt-2"><ProgressBar value={pct} color={doneToday ? '#C9DB8A' : '#FBC85F'} h={6} /></div>
+                <div className="mt-2"><ProgressBar value={pct} color={doneToday ? '#C9DB8A' : '#FBBF24'} h={6} /></div>
                 <div className="mt-3 space-y-1">
                   {cl.items.map((it) => (
                     <ChecklistRow
@@ -115,27 +115,27 @@ export default function Standards() {
 
       {tab === 'time' && (
         <div className="space-y-4">
-          <p className="eyebrow" style={{ color: '#FBC85F' }}>Источник: калькуляции ТТК сети</p>
-          <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#555555' }}>
+          <p className="eyebrow" style={{ color: '#FBBF24' }}>Источник: калькуляции ТТК сети</p>
+          <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#666666' }}>
             Все значения взяты из калькуляций ТТК сети и вынесены в один раздел. Изменение в одном месте обновляет тесты, ТТК-карточки и чек-листы.
           </p>
           <div className="space-y-3">
             {timeStandards.map((t) => (
               <Card key={t.drink} light className="flex items-center justify-between gap-3 p-4">
                 <div>
-                  <p className="font-display text-[13px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{t.drink}</p>
-                  <p className="mt-0.5 text-[11px] font-bold" style={{ color: '#555555' }}>{t.note}</p>
+                  <p className="font-display text-[13px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{t.drink}</p>
+                  <p className="mt-0.5 text-[11px] font-bold" style={{ color: '#666666' }}>{t.note}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-display text-[14px] font-extrabold tnum" style={{ color: '#FBC85F' }}>{t.target}</p>
-                  <p className="text-[11px] font-bold" style={{ color: '#EE5A55' }}>Лимит {t.limit}</p>
+                  <p className="font-display text-[14px] font-extrabold tnum" style={{ color: '#FBBF24' }}>{t.target}</p>
+                  <p className="text-[11px] font-bold" style={{ color: '#F87171' }}>Лимит {t.limit}</p>
                 </div>
               </Card>
             ))}
           </div>
-          <div className="rounded-card bg-surface p-4" style={{ border: '1px dashed #CFCCC4' }}>
-            <p className="eyebrow" style={{ color: '#5B45F0' }}>Настраиваемые значения</p>
-            <p className="mt-1 text-[12px]" style={{ color: '#555555' }}>
+          <div className="rounded-card bg-surface p-4" style={{ border: '1px dashed #3A3A3D' }}>
+            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Настраиваемые значения</p>
+            <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>
               Каждое значение: целевое время, допуск, категория напитка, источник, дата обновления. Редактируйте здесь — обновится везде.
             </p>
           </div>

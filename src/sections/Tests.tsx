@@ -62,10 +62,10 @@ function genQuiz(count = 10): QuizQ[] {
 
 function OptionBtn({ text, state, onClick }: { text: string; state: 'idle' | 'right' | 'wrong' | 'dim'; onClick: () => void }) {
   const colors = {
-    idle: { bg: '#1B1B1D', border: '#2A2A2D', fg: '#FFFFFF' },
+    idle: { bg: '#1A1A1C', border: '#3A3A3D', fg: '#FFFFFF' },
     right: { bg: '#C9DB8A22', border: '#C9DB8A', fg: '#C9DB8A' },
-    wrong: { bg: '#EE5A5522', border: '#EE5A55', fg: '#EE5A55' },
-    dim: { bg: '#0F0F10', border: '#2A2A2D', fg: '#555555' },
+    wrong: { bg: '#F8717122', border: '#F87171', fg: '#F87171' },
+    dim: { bg: '#0F0F10', border: '#3A3A3D', fg: '#666666' },
   }[state]
   return (
     <button onClick={onClick}
@@ -106,15 +106,15 @@ function Quiz({ onExit }: { onExit: () => void }) {
     const pct = Math.round((score / qs.length) * 100)
     return (
       <div className="rounded-card bg-surface p-8 text-center anim-pop">
-        <ProgressRing value={pct} size={110} color={pct >= 80 ? '#C9DB8A' : pct >= 50 ? '#FBC85F' : '#EE5A55'} stroke={6}>
+        <ProgressRing value={pct} size={110} color={pct >= 80 ? '#C9DB8A' : pct >= 50 ? '#FBBF24' : '#F87171'} stroke={6}>
           <span className="font-display text-[22px] font-extrabold">{pct}%</span>
         </ProgressRing>
-        <p className="font-display mt-4 text-[18px] font-extrabold" style={{ color: '#111111' }}>{score}/{qs.length} верно</p>
-        <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
+        <p className="font-display mt-4 text-[18px] font-extrabold" style={{ color: '#0F0F10' }}>{score}/{qs.length} верно</p>
+        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
           {pct >= 80 ? 'Меню сидит в руках. Так держать!' : pct >= 50 ? 'Неплохо. Слабые места — в карточках ТТК.' : 'Открой ТТК и пройдите Build-тренажёр по ошибкам.'}
         </p>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#111111', color: '#FFFFFF', height: 52 }}>К тестам</button>
+          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>К тестам</button>
       </div>
     )
   }
@@ -122,13 +122,13 @@ function Quiz({ onExit }: { onExit: () => void }) {
   const q = qs[i]
   return (
     <div className="anim-rise">
-      <div className="flex items-center justify-between text-[12px]" style={{ color: '#555555' }}>
+      <div className="flex items-center justify-between text-[12px]" style={{ color: '#666666' }}>
         <span>Вопрос {i + 1}/{qs.length}</span>
         <span style={{ color: '#C9DB8A' }}>верно: {score}</span>
       </div>
       <div className="mt-2"><ProgressBar value={(i / qs.length) * 100} color="#C9DB8A" /></div>
       <Card light className="mt-5 p-6 space-y-4">
-        <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
+        <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
         <div className="space-y-2">
           {q.options.map((o, idx) => (
             <OptionBtn key={idx} text={o}
@@ -137,14 +137,14 @@ function Quiz({ onExit }: { onExit: () => void }) {
           ))}
         </div>
         {picked !== null && (
-          <div className="rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111' }}>
+          <div className="rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10' }}>
             {q.note}
           </div>
         )}
       </Card>
       {picked !== null && (
         <button onClick={next} className="mt-4 w-full rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press anim-pop"
-          style={{ background: '#111111', color: '#FFFFFF', height: 52 }}>
+          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>
           {i + 1 === qs.length ? 'Результат' : 'Дальше →'}
         </button>
       )}
@@ -183,10 +183,10 @@ function Blitz({ onExit }: { onExit: () => void }) {
   if (over) {
     return (
       <div className="rounded-card bg-surface p-8 text-center anim-pop">
-        <p className="eyebrow" style={{ color: '#5B45F0' }}>Время вышло</p>
-        <p className="font-display mt-3 text-[48px] font-extrabold" style={{ color: '#EE5A55' }}>{correct}</p>
-        <p className="mt-1 text-[13px]" style={{ color: '#555555' }}>верных из {total} за минуту</p>
-        <p className="mx-auto mt-4 max-w-sm text-[13px] leading-relaxed" style={{ color: '#111111' }}>
+        <p className="eyebrow" style={{ color: '#8B5CF6' }}>Время вышло</p>
+        <p className="font-display mt-3 text-[48px] font-extrabold" style={{ color: '#F87171' }}>{correct}</p>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>верных из {total} за минуту</p>
+        <p className="mx-auto mt-4 max-w-sm text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
           {correct >= 8
             ? 'Машина потока. Утренний пик вам по плечу.'
             : correct >= 5
@@ -194,7 +194,7 @@ function Blitz({ onExit }: { onExit: () => void }) {
               : 'В пике счёт на секунды. Подтяните ТТК и возвращайтесь.'}
         </p>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#EE5A55', color: '#111111', height: 52 }}>К тестам</button>
+          style={{ background: '#F87171', color: '#0F0F10', height: 52 }}>К тестам</button>
       </div>
     )
   }
@@ -202,16 +202,16 @@ function Blitz({ onExit }: { onExit: () => void }) {
   return (
     <div className="anim-rise">
       <div className="flex items-center justify-between">
-        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#EE5A55' : '#FBC85F' }}>0:{String(left).padStart(2, '0')}</span>
+        <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
           <Pill color="#C9DB8A">обслужено {correct}</Pill>
-          <Pill color="#EE5A55">ушло {total - correct}</Pill>
+          <Pill color="#F87171">ушло {total - correct}</Pill>
         </div>
       </div>
-      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#EE5A55' : '#FBC85F'} /></div>
+      <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#F87171' : '#FBBF24'} /></div>
       {q && (
         <Card light className="mt-5 p-6" key={q.prompt}>
-          <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
+          <h3 className="font-display text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
           <div className="mt-5 space-y-2">
             {q.options.map((o, idx) => (
               <OptionBtn key={idx} text={o} state="idle" onClick={() => answer(idx)} />
@@ -249,7 +249,7 @@ function Exam() {
           <Chip key={b} active={i === block} onClick={() => { setBlock(i); setIdx(0); setRevealed(false) }}>{b}</Chip>
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-between text-[12px]" style={{ color: '#555555' }}>
+      <div className="mt-3 flex items-center justify-between text-[12px]" style={{ color: '#666666' }}>
         <span>Вопрос {idx + 1}/{blockQs.length}</span>
         <span style={{ color: '#C9DB8A' }}>закрыто в блоке: {knownInBlock}/{blockQs.length} · всего {totalKnown}/40</span>
       </div>
@@ -257,31 +257,31 @@ function Exam() {
 
       {q ? (
         <Card light className="mt-4 p-6 space-y-4">
-          <p className="eyebrow" style={{ color: '#5B45F0' }}>Ответьте вслух или про себя, затем сверьтесь с эталоном</p>
-          <h3 className="font-display mt-3 text-[16px] font-extrabold leading-snug" style={{ color: '#111111' }}>{q.prompt}</h3>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Ответьте вслух или про себя, затем сверьтесь с эталоном</p>
+          <h3 className="font-display mt-3 text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
           {!revealed ? (
             <button onClick={() => setRevealed(true)} className="mt-6 w-full rounded-[26px] border px-4 py-3 text-[13px] font-bold btn-press"
-              style={{ borderColor: '#3A3A3D', color: '#111111', height: 52 }}>
+              style={{ borderColor: '#3A3A3D', color: '#0F0F10', height: 52 }}>
               Показать эталон ответа
             </button>
           ) : (
             <div>
-              <div className="rounded-[16px] p-4 text-[13px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111', border: '1px solid #C9DB8A55' }}>
+              <div className="rounded-[16px] p-4 text-[13px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10', border: '1px solid #C9DB8A55' }}>
                 {q.model}
               </div>
-              <p className="mt-4 text-center text-[12px] font-bold" style={{ color: '#555555' }}>Ваш ответ был близок к эталону?</p>
+              <p className="mt-4 text-center text-[12px] font-bold" style={{ color: '#666666' }}>Ваш ответ был близок к эталону?</p>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <button onClick={() => mark(true)} className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-                  style={{ background: '#C9DB8A', color: '#111111', height: 52 }}>Знал · +8 XP</button>
+                  style={{ background: '#C9DB8A', color: '#0F0F10', height: 52 }}>Знал · +8 XP</button>
                 <button onClick={() => mark(false)} className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
-                  style={{ background: '#EE5A55', color: '#FFFFFF', height: 52 }}>Надо повторить</button>
+                  style={{ background: '#F87171', color: '#FFFFFF', height: 52 }}>Надо повторить</button>
               </div>
             </div>
           )}
         </Card>
       ) : (
         <Card light className="mt-4 p-6 text-center">
-          <p className="text-[13px]" style={{ color: '#555555' }}>Блок закрыт.</p>
+          <p className="text-[13px]" style={{ color: '#666666' }}>Блок закрыт.</p>
         </Card>
       )}
     </div>
@@ -290,8 +290,8 @@ function Exam() {
 
 function resultColor(score: number): string {
   if (score === 2) return 'text-[#C9DB8A]'
-  if (score === 1) return 'text-[#FBC85F]'
-  return 'text-[#EE5A55]'
+  if (score === 1) return 'text-[#FBBF24]'
+  return 'text-[#F87171]'
 }
 
 function resultLabel(score: number): React.ReactNode {
@@ -315,13 +315,13 @@ function Cases() {
 
   return (
     <div className="anim-rise">
-      <div className="flex items-center justify-between text-[12px]" style={{ color: '#555555' }}>
+      <div className="flex items-center justify-between text-[12px]" style={{ color: '#666666' }}>
         <span>Кейс {i + 1}/{serviceCases.length}</span>
-        <Pill color="#FBC85F">{c.block}</Pill>
+        <Pill color="#FBBF24">{c.block}</Pill>
       </div>
-      <div className="mt-2"><ProgressBar value={(i / serviceCases.length) * 100} color="#FBC85F" /></div>
+      <div className="mt-2"><ProgressBar value={(i / serviceCases.length) * 100} color="#FBBF24" /></div>
       <Card light className="mt-4 p-6 space-y-4">
-        <p className="text-[13px] leading-relaxed" style={{ color: '#111111' }}>{c.scene}</p>
+        <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{c.scene}</p>
         <div className="mt-5 space-y-2">
           {c.options.map((o, idx) => {
             let st: 'idle' | 'right' | 'wrong' | 'dim' = 'idle'
@@ -339,7 +339,7 @@ function Cases() {
             {resultLabel(c.options[picked].score)}
             {solvedBest === 2 && picked !== null && c.options[picked].score < 2 ? ' (ранее решён верно)' : ''}
           </p>
-          <div className="mt-2 rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#111111' }}>
+          <div className="mt-2 rounded-[16px] p-3 text-[12px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10' }}>
             {c.explain}
           </div>
         </div>
@@ -348,7 +348,7 @@ function Cases() {
       {picked !== null && (
         <button onClick={() => { setPicked(null); setI((x) => (x + 1) % serviceCases.length) }}
           className="mt-4 w-full rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press anim-pop"
-          style={{ background: '#C9DB8A', color: '#111111', height: 52 }}>
+          style={{ background: '#C9DB8A', color: '#0F0F10', height: 52 }}>
           {i + 1 === serviceCases.length ? 'Сначала ↺' : 'Следующий кейс →'}
         </button>
       )}
@@ -375,10 +375,10 @@ export default function Tests() {
       stat: `лучший: ${s.quizBest}%`, color: '#C9DB8A' },
     { id: 'blitz' as Mode, kicker: '60 секунд', title: 'Блиц «Час пик»',
       desc: 'Минутный спринт на скорость вспоминания меню. Без пауз.',
-      stat: `рекорд: ${s.blitzBest}`, color: '#EE5A55' },
+      stat: `рекорд: ${s.blitzBest}`, color: '#F87171' },
     { id: 'exam' as Mode, kicker: '40 вопросов · 4 блока', title: 'Экзамен бариста',
       desc: 'Сервис, техника, фильтр, эспрессо. Открытые вопросы с эталоном и самооценкой.',
-      stat: `закрыто: ${examTotal}/40`, color: '#FBC85F' },
+      stat: `закрыто: ${examTotal}/40`, color: '#FBBF24' },
     { id: 'cases' as Mode, kicker: '12 ситуаций', title: 'Кейсы смены',
       desc: 'Реальные ситуации с гостями, очередью и станцией. Логика выбора.',
       stat: `решено идеально: ${casesPerfect}/12`, color: '#C9DB8A' },
@@ -389,7 +389,7 @@ export default function Tests() {
       <div className="anim-rise">
         <p className="eyebrow">Проверка знаний</p>
         <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Тесты и экзамен</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#555555' }}>
+        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
           Четыре формата: от быстрого блица до полной аттестации. ТТК выучено: {knownCount}/79 — квиз берёт вопросы из всего меню.
         </p>
       </div>
@@ -398,11 +398,11 @@ export default function Tests() {
           <button key={c.id} onClick={() => setMode(c.id)}
             className="rounded-card bg-surface p-5 text-left anim-rise" style={{ animationDelay: `${i * 60}ms` }}>
             <div className="flex items-center justify-between">
-              <p className="eyebrow" style={{ color: '#5B45F0' }}>{c.kicker}</p>
-              <span className="text-[10px] font-bold" style={{ color: '#555555' }}>{c.stat}</span>
+              <p className="eyebrow" style={{ color: '#8B5CF6' }}>{c.kicker}</p>
+              <span className="text-[10px] font-bold" style={{ color: '#666666' }}>{c.stat}</span>
             </div>
-            <h3 className="font-display mt-2 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{c.title}</h3>
-            <p className="mt-2 text-[12px] leading-relaxed" style={{ color: '#555555' }}>{c.desc}</p>
+            <h3 className="font-display mt-2 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{c.title}</h3>
+            <p className="mt-2 text-[12px] leading-relaxed" style={{ color: '#666666' }}>{c.desc}</p>
             <p className="mt-4 text-[12px] font-bold" style={{ color: c.color }}>Начать →</p>
           </button>
         ))}
@@ -414,6 +414,6 @@ export default function Tests() {
 function BackBtn({ onClick }: { onClick: () => void }) {
   return (
     <button onClick={onClick} className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
-      style={{ borderColor: '#2A2A2D', color: '#FFFFFF' }}>← Все тесты</button>
+      style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}>← Все тесты</button>
   )
 }
