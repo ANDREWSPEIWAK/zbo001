@@ -119,7 +119,7 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
         <div className="mt-4 rounded-[24px] p-5" style={{ background: '#FFFFFF' }}>
           <p className="eyebrow" style={{ color: '#EE5A55' }}>Вопрос</p>
           <p className="mt-1 font-display text-[16px] font-extrabold leading-relaxed" style={{ color: '#111111' }}>
-            {recipe.recipe.ru.replace(/\d+(?:[.,]\d+)?/g, '____')}
+            {recipe.recipe.ru.replace(/\d+(?:[.,]\d+)?/, '____')}
           </p>
           {!show ? (
             <div className="mt-4">

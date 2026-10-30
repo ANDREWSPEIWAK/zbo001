@@ -7,13 +7,28 @@ import Ttk from './sections/Ttk'
 import Tests from './sections/Tests'
 import Library from './sections/Library'
 import Wheel from './sections/Wheel'
+import Shift from './sections/Shift'
+import Discipline from './sections/Discipline'
+import Standards from './sections/Standards'
+import Resources from './sections/Resources'
+import Settings from './sections/Settings'
 import Profile from './sections/Profile'
 import {
   Menu, X, User, Route, FileText, CheckCircle2, Clock, ShieldCheck, Palette, Globe, Settings as SettingsIcon,
   type LucideIcon,
 } from 'lucide-react'
 
-type AppTab = 'path' | 'ttk' | 'tests' | 'library' | 'wheel'
+type AppTab =
+  | 'path'
+  | 'ttk'
+  | 'tests'
+  | 'library'
+  | 'wheel'
+  | 'shift'
+  | 'discipline'
+  | 'standards'
+  | 'resources'
+  | 'settings'
 type DrawerItem = 'shift' | 'discipline' | 'standards' | 'resources' | 'settings'
 
 const bottomTabs: { id: AppTab; label: string; Icon: LucideIcon }[] = [
@@ -49,7 +64,8 @@ export default function App() {
     setDrawerOpen(false)
   }
 
-  const goDrawer = () => {
+  const goDrawer = (id: DrawerItem) => {
+    setTab(id)
     setDrawerOpen(false)
   }
 
@@ -97,6 +113,11 @@ export default function App() {
         {tab === 'tests' && <Tests />}
         {tab === 'library' && <Library />}
         {tab === 'wheel' && <Wheel />}
+        {tab === 'shift' && <Shift />}
+        {tab === 'discipline' && <Discipline />}
+        {tab === 'standards' && <Standards />}
+        {tab === 'resources' && <Resources />}
+        {tab === 'settings' && <Settings />}
       </main>
 
       {/* Bottom pill nav */}
@@ -177,7 +198,7 @@ export default function App() {
                       key={item.id}
                       type="button"
                       aria-label={item.label}
-                      onClick={goDrawer}
+                      onClick={() => goDrawer(item.id)}
                       className="flex w-full items-center gap-3 border-t border-solid border-[#CFCCC4] px-5 py-3.5 text-left"
                       style={{ height: 56 }}
                     >
