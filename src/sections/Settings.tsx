@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { actions, useStore } from '../store'
 import { Card, Button } from '../components/app-ui'
 
-export default function Settings() {
+export default function Settings({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md')
   const [reduceMotion, setReduceMotion] = useState(false)
@@ -28,7 +30,7 @@ export default function Settings() {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
         <p className="eyebrow">Настройки приложения</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Настройки</h1>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('settings.title_ru')}</h1>
       </motion.div>
 
       <motion.div
@@ -38,8 +40,8 @@ export default function Settings() {
         className="space-y-4"
       >
         <Card light className="space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Размер шрифта</p>
-          <p className="text-[13px]" style={{ color: '#0F0F10' }}>Три шага: малый / средний / крупный. Минимум 12 px, контраст не ниже 4.5:1.</p>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('settings.font_ru')}</p>
+          <p className="text-[13px]" style={{ color: '#0F0F10' }}>{L('settings.font_desc_ru')}</p>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {(['sm', 'md', 'lg'] as const).map((fs) => {
               const labels: Record<string, string> = { sm: 'Малый', md: 'Средний', lg: 'Крупный' }
@@ -54,7 +56,7 @@ export default function Settings() {
                     height: 44,
                     fontSize: '12px',
                     background: isActive ? '#0F0F10' : 'transparent',
-                    color: isActive ? '#FFFFFF' : '#FFFFFF',
+                    color: '#FFFFFF',
                     border: isActive ? 'none' : '1px solid #3A3A3D',
                   }}
                 >
@@ -66,11 +68,11 @@ export default function Settings() {
         </Card>
 
         <Card light className="space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Анимации</p>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('settings.anim_ru')}</p>
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Уменьшение анимаций</p>
-              <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>Отключается при prefers-reduced-motion и здесь.</p>
+              <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>{L('settings.anim_ru')}</p>
+              <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>{L('settings.anim_desc_ru')}</p>
             </div>
             <button
               role="switch"
@@ -85,11 +87,11 @@ export default function Settings() {
         </Card>
 
         <Card light className="space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Высокий контраст</p>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('settings.contrast_ru')}</p>
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Режим высокого контраста</p>
-              <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>Состояния не только цветом.</p>
+              <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>{L('settings.contrast_ru')}</p>
+              <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>{L('settings.contrast_desc_ru')}</p>
             </div>
             <button
               role="switch"
@@ -104,20 +106,17 @@ export default function Settings() {
         </Card>
 
         <Card light className="space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Резервная копия</p>
-          <p className="text-[13px]" style={{ color: '#0F0F10' }}>Прогресс и настройки хранятся только в этом браузере (localStorage). Экспорт и импорт в JSON.</p>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('settings.backup_ru')}</p>
+          <p className="text-[13px]" style={{ color: '#0F0F10' }}>{L('settings.backup_desc_ru')}</p>
           <div className="mt-3 flex gap-2">
-            <Button variant="secondary" onClick={handleExport} className="flex-1" style={{ height: 44, fontSize: '12px' }}>Экспорт JSON</Button>
-            <Button variant="ghost" onClick={handleImport} className="flex-1" style={{ height: 44, fontSize: '12px' }}>Импорт JSON</Button>
+            <Button variant="secondary" onClick={handleExport} className="flex-1" style={{ height: 44, fontSize: '12px' }}>{L('settings.export_ru')}</Button>
+            <Button variant="ghost" onClick={handleImport} className="flex-1" style={{ height: 44, fontSize: '12px' }}>{L('settings.import_ru')}</Button>
           </div>
         </Card>
 
         <div className="rounded-card bg-surface p-4" style={{ border: '1px dashed #3A3A3D' }}>
-          <p className="text-[12px] font-bold" style={{ color: '#0F0F10' }}>Приватность (demo)</p>
-          <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>
-            Это демо-версия без сервера. Персональные данные не отправляются за пределы устройства и хранятся только в этом браузере.
-            Для работы сети нужен бэкенд (например, Supabase) — выберите хранилище перед запуском в продакшен.
-          </p>
+          <p className="text-[12px] font-bold" style={{ color: '#0F0F10' }}>{L('settings.privacy_ru')}</p>
+          <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>{L('settings.privacy_desc_ru')}</p>
         </div>
       </motion.div>
     </div>
@@ -149,7 +148,7 @@ export default function Settings() {
           void data
           actions.addXp(5, 'импорт прогресса')
         } catch {
-          alert('Неверный файл резервной копии')
+          alert(L('settings.bad_backup_ru'))
         }
       }
       reader.readAsText(file)

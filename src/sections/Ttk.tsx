@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
+import { t, type Lang } from '../lang'
 import { recipes, ttkCategories, type Recipe } from '../data/recipes'
 import { Search, Chip, ProgressBar, Pill } from '../components/app-ui'
 
@@ -27,8 +28,9 @@ const XP_VALUES = {
   buildCorrect: 10,
 } as const
 
-function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; onClose: () => void; onTrain: () => void; onRecall: () => void }) {
+function RecipeModal({ recipe, onClose, onTrain, onRecall, lang }: { recipe: Recipe; onClose: () => void; onTrain: () => void; onRecall: () => void; lang: Lang }) {
   const s = useStore()
+  const L = (key: string) => t(key, lang)
   const known = !!s.known[recipe.id]
   const cat = ttkCategories.find((c) => c.id === recipe.category)
   const color = CATEGORY_COLOR[recipe.category] || '#666666'
@@ -49,7 +51,7 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
         exit={{ opacity: 0, y: 20 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5"
-        style={{ background: '#1A1A1C', color: '#FFFFFF' }}
+        style={{ background: '#1A1A1C', color: '#0F0F10' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3">
@@ -57,24 +59,26 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
             <p className="eyebrow" style={{ color: color }}>{cat?.title}</p>
             <h2 className="mt-1 font-display text-[22px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{recipe.name}</h2>
             <span className={`inline-flex items-center rounded-[22px] px-3 py-1 text-[11px] font-bold mt-1`} style={{ background: '#1A1A1C', color: '#FFFFFF' }}>
-              Единая схема ТТК · источник: карточка станции
+              {L('ttk.scheme_ru')}
             </span>
           </div>
-          <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>Закрыть</button>
+          <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>
+            {L('ttk.close_ru')}
+          </button>
         </div>
 
         <div className="mt-4 grid gap-3">
           <div className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
-            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Рецепт (единая схема)</p>
+            <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('ttk.recipe_ru')}</p>
             <p className="mt-1 font-display text-[15px] font-extrabold leading-relaxed" style={{ color: '#0F0F10' }}>{recipe.recipe.ru}</p>
-            <p className="mt-2 text-[11px] font-bold" style={{ color: '#666666' }}>Доза · выход · время · молоко · посуда — из карточка станции.</p>
+            <p className="mt-2 text-[11px] font-bold" style={{ color: '#666666' }}>{L('ttk.source_note_ru')}</p>
           </div>
           <div className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
-            <p className="eyebrow" style={{ color: '#F87171' }}>Ожидаемый вкус</p>
+            <p className="eyebrow" style={{ color: '#F87171' }}>{L('ttk.taste_ru')}</p>
             <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{recipe.taste.ru}</p>
           </div>
           <div className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
-            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Сборка по шагам</p>
+            <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('ttk.steps_ru')}</p>
             <div className="mt-2 space-y-2">
               {recipe.steps.ru.map((st, i) => (
                 <div key={i} className="flex gap-3 text-[13px]" style={{ color: '#0F0F10' }}>
@@ -93,13 +97,13 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
             className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
             style={{ background: known ? '#FFFFFF' : '#0F0F10', color: known ? '#0F0F10' : '#FFFFFF', height: 52, border: known ? '1px solid #3A3A3D' : 'none' }}
           >
-            {known ? 'Знаю ✓' : `Отметить знакомым · +${XP_VALUES.markKnown} XP`}
+            {known ? L('ttk.mark_known_ru') : `${L('ttk.mark_known_xp_ru')}`}
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button onClick={onTrain} className="rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press"
-              style={{ background: '#1A1A1C', color: '#FFFFFF', height: 52 }}>Собрать порядок</button>
+              style={{ background: '#1A1A1C', color: '#FFFFFF', height: 52 }}>{L('ttk.build_ru')}</button>
             <button onClick={onRecall} className="rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press"
-              style={{ background: color, color: '#FFFFFF', height: 52 }}>Вспомни значения</button>
+              style={{ background: color, color: '#FFFFFF', height: 52 }}>{L('ttk.recall_ru')}</button>
           </div>
         </div>
       </motion.div>
@@ -107,10 +111,11 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
   )
 }
 
-function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
+function RecallModal({ recipe, onClose, lang }: { recipe: Recipe; onClose: () => void; lang: Lang }) {
   const [answer, setAnswer] = useState('')
   const [show, setShow] = useState(false)
   const [result, setResult] = useState<'ok' | 'bad' | null>(null)
+  const L = (key: string) => t(key, lang)
 
   const nums = recipe.recipe.ru.match(/\d+(?:[.,]\d+)?/g)
   const target = nums ? nums[0] : '—'
@@ -118,7 +123,7 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
   const check = () => {
     const ok = answer.trim().replace(/,/g, '.') === target
     setResult(ok ? 'ok' : 'bad')
-    if (ok) actions.addXp(XP_VALUES.recallCorrect, 'вспомни ТТК')
+    if (ok) actions.addXp(XP_VALUES.recallCorrect, L('ttk.recall_ru'))
   }
 
   return (
@@ -142,18 +147,16 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="eyebrow" style={{ color: '#FBBF24' }}>Режим «Вспомни»</p>
+            <p className="eyebrow" style={{ color: '#FBBF24' }}>{L('ttk.recall_mode_ru')}</p>
             <h2 className="mt-1 font-display text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{recipe.name}</h2>
           </div>
-          <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>Закрыть</button>
+          <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>{L('ttk.close_ru')}</button>
         </div>
 
-        <p className="mt-4 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
-          Назовите значение без подсказки. Допуск ±. Нажмите «Показать», чтобы свериться.
-        </p>
+        <p className="mt-4 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{L('ttk.recall_instr_ru')}</p>
 
         <div className="mt-4 rounded-[24px] p-5" style={{ background: '#FFFFFF' }}>
-          <p className="eyebrow" style={{ color: '#F87171' }}>Вопрос</p>
+          <p className="eyebrow" style={{ color: '#F87171' }}>{L('ttk.question_ru')}</p>
           <p className="mt-1 font-display text-[16px] font-extrabold leading-relaxed" style={{ color: '#0F0F10' }}>
             {recipe.recipe.ru.replace(/\d+(?:[.,]\d+)?/, '____')}
           </p>
@@ -168,16 +171,16 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
                 style={{ borderColor: '#3A3A3D', background: '#1A1A1C', color: '#FFFFFF' }}
               />
               <button onClick={check} className="mt-3 rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press w-full"
-                style={{ background: '#0F0F10', color: '#FFFFFF', height: 44 }}>Показать эталон</button>
+                style={{ background: '#0F0F10', color: '#FFFFFF', height: 44 }}>{L('ttk.show_etalon_ru')}</button>
             </div>
           ) : (
             <div className="mt-4 space-y-2">
               <p className={`text-[14px] font-bold ${result === 'ok' ? 'text-[#C9DB8A]' : 'text-[#F87171]'}`}>
-                {result === 'ok' ? `Верно · +${XP_VALUES.recallCorrect} XP` : `Неверно. Эталон: ${target}`}
+                {result === 'ok' ? `${L('ttk.correct_ru')}` : `${L('ttk.wrong_ru')} ${target}`}
               </p>
-              <p className="mt-1 text-[12px]" style={{ color: '#0F0F10' }}>Полный рецепт: {recipe.recipe.ru}</p>
+              <p className="mt-1 text-[12px]" style={{ color: '#0F0F10' }}>{L('ttk.full_recipe_ru')} {recipe.recipe.ru}</p>
               <button onClick={() => { setShow(false); setResult(null); setAnswer('') }} className="rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press w-full"
-                style={{ background: '#1A1A1C', color: '#FFFFFF', height: 44 }}>Ещё раз</button>
+                style={{ background: '#1A1A1C', color: '#FFFFFF', height: 44 }}>{L('ttk.again_ru')}</button>
             </div>
           )}
         </div>
@@ -186,13 +189,15 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
   )
 }
 
-export default function Ttk() {
+export default function Ttk({ lang }: { lang: Lang }) {
   const s = useStore()
   const [query, setQuery] = useState('')
   const [cat, setCat] = useState('all')
   const [open, setOpen] = useState<Recipe | null>(null)
   const [train, setTrain] = useState<Recipe | null>(null)
   const [recall, setRecall] = useState<Recipe | null>(null)
+
+  const L = (key: string) => t(key, lang)
 
   const knownCount = Object.values(s.known).filter(Boolean).length
   const totalTtk = recipes.length
@@ -214,11 +219,9 @@ export default function Ttk() {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="space-y-2"
       >
-        <p className="eyebrow">ТТК · техкарты станции</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Рецепты и сборка</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
-          Карточки: рецепт по единой схеме, вкус, метод, шаги. Проверяйте знание режимом «Вспомни», а не отметкой «знаю».
-        </p>
+        <p className="eyebrow">{L('ttk.title_ru')}</p>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('ttk.title_ru')}</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('ttk.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -228,7 +231,7 @@ export default function Ttk() {
         className="rounded-card bg-surface p-4"
       >
         <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
-          <span>Знаю рецептов</span>
+          <span>{L('ttk.known_ru')}</span>
           <span className="font-bold tnum" style={{ color: '#C9DB8A' }}>{knownCount} / {totalTtk}</span>
         </div>
         <div className="mt-2"><ProgressBar value={(knownCount / totalTtk) * 100} color="#C9DB8A" h={6} /></div>
@@ -239,10 +242,10 @@ export default function Ttk() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
       >
-        <Search value={query} onChange={setQuery} placeholder="Поиск: flat white, раф, V60…" />
+        <Search value={query} onChange={setQuery} placeholder={L('ttk.search_ru')} />
 
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1 mt-4">
-          <Chip active={cat === 'all'} onClick={() => setCat('all')}>Все</Chip>
+          <Chip active={cat === 'all'} onClick={() => setCat('all')}>{L('ttk.all_ru')}</Chip>
           {ttkCategories.map((c) => (
             <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>{c.title}</Chip>
           ))}
@@ -277,29 +280,30 @@ export default function Ttk() {
           )
         })}
         {filtered.length === 0 && (
-          <p className="py-8 text-left text-[13px]" style={{ color: '#666666' }}>Ничего не найдено. Попробуй другой запрос.</p>
+          <p className="py-8 text-left text-[13px]" style={{ color: '#666666' }}>{L('ttk.not_found_ru')}</p>
         )}
       </motion.div>
 
-      {open && !train && !recall && <RecipeModal recipe={open} onClose={() => setOpen(null)} onTrain={() => setTrain(open)} onRecall={() => setRecall(open)} />}
-      {train && <BuildTrainer recipe={train} onClose={() => { setTrain(null); setOpen(null) }} />}
-      {recall && <RecallModal recipe={recall} onClose={() => { setRecall(null); setOpen(null) }} />}
+      {open && !train && !recall && <RecipeModal recipe={open} onClose={() => setOpen(null)} onTrain={() => setTrain(open)} onRecall={() => setRecall(open)} lang={lang} />}
+      {train && <BuildTrainer recipe={train} onClose={() => { setTrain(null); setOpen(null) }} lang={lang} />}
+      {recall && <RecallModal recipe={recall} onClose={() => { setRecall(null); setOpen(null) }} lang={lang} />}
     </div>
   )
 }
 
-function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
+function BuildTrainer({ recipe, onClose, lang }: { recipe: Recipe; onClose: () => void; lang: Lang }) {
   const correct = recipe.steps.ru
   const [pool] = useState(() => [...correct].sort(() => Math.random() - 0.5))
   const [picked, setPicked] = useState<string[]>([])
   const [result, setResult] = useState<null | boolean>(null)
+  const L = (key: string) => t(key, lang)
 
   const check = (next: string[]) => {
     if (next.length !== correct.length) return
     const ok = next.every((s, i) => s === correct[i])
     setResult(ok)
     if (ok) {
-      actions.addXp(XP_VALUES.buildCorrect, 'сборка верна')
+      actions.addXp(XP_VALUES.buildCorrect, L('ttk.build_ru'))
       actions.markKnown(recipe.id, true)
     }
   }
@@ -330,12 +334,12 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
         style={{ background: '#1A1A1C', color: '#0F0F10' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="eyebrow" style={{ color: '#FBBF24' }}>Build-тренажёр</p>
+        <p className="eyebrow" style={{ color: '#FBBF24' }}>{L('ttk.build_trainer_ru')}</p>
         <h2 className="font-display mt-1 text-[18px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{recipe.name}</h2>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>Соберите напиток: нажимайте шаги в правильном порядке.</p>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('ttk.build_instr_ru')}</p>
 
         <div className="mt-4 min-h-[64px] rounded-[24px] p-3" style={{ background: '#FFFFFF' }}>
-          {picked.length === 0 && <p className="text-[13px] italic" style={{ color: '#666666' }}>Здесь появится ваша сборка…</p>}
+          {picked.length === 0 && <p className="text-[13px] italic" style={{ color: '#666666' }}>{L('ttk.build_here_ru')}</p>}
           <div className="space-y-2">
             {picked.map((p, i) => {
               const okStep = result === null || correct[i] === p
@@ -362,15 +366,15 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
         {result !== null && (
           <div className="mt-4 rounded-[24px] p-4 text-left" style={{ background: result ? '#C9DB8A22' : '#F8717122' }}>
             <p className="font-display text-[16px] font-extrabold" style={{ color: result ? '#C9DB8A' : '#F87171' }}>
-              {result ? `Сборка идеальна · +${XP_VALUES.buildCorrect} XP` : 'Порядок нарушен'}
+              {result ? `${L('ttk.build_perfect_ru')}` : L('ttk.build_wrong_ru')}
             </p>
             {!result && (
               <p className="mt-2 text-[12px]" style={{ color: '#0F0F10' }}>
-                Верно: {correct.join(' → ')}
+                {L('ttk.build_correct_ru')} {correct.join(' → ')}
               </p>
             )}
             <button onClick={onClose} className="mt-4 rounded-[26px] px-6 py-2.5 text-[13px] font-extrabold uppercase btn-press"
-              style={{ background: '#0F0F10', color: '#FFFFFF', height: 44 }}>Готово</button>
+              style={{ background: '#0F0F10', color: '#FFFFFF', height: 44 }}>{L('ttk.done_ru')}</button>
           </div>
         )}
       </motion.div>

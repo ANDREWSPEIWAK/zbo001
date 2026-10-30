@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { actions, useStore } from '../store'
 import { disciplineChecklists } from '../data/discipline'
 import { timeStandards } from '../data/service'
 import { Card, Button, Pill, ChecklistRow, ProgressBar, Chip } from '../components/app-ui'
 
-export default function Standards() {
+export default function Standards({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [tab, setTab] = useState<'standards' | 'checklists' | 'time'>('standards')
   const [itemDone, setItemDone] = useState<Record<string, Set<string>>>({})
@@ -29,10 +31,8 @@ export default function Standards() {
         className="space-y-2"
       >
         <p className="eyebrow">Стандарты сети · чек-листы</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Стандарты и чек-листы</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
-          Стандарты сервиса, подачи, гигиены и работы на баре с привязкой к уровням. Чек-листы закрываются с датой и временем.
-        </p>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('standards.title_ru')}</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('standards.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -134,10 +134,8 @@ export default function Standards() {
                       disabled={done.size !== cl.items.length || doneToday}
                       className="w-auto"
                       style={{ height: 44, padding: '0 14px', fontSize: '12px' }}
-                    >
-                      Закрыть чек-лист
-                    </Button>
-                    {doneToday && <span className="text-[11px] font-bold" style={{ color: '#C9DB8A' }}>✓ закрыто сегодня</span>}
+                    >{L('standards.close_ru')}</Button>
+                    {doneToday && <span className="text-[11px] font-bold" style={{ color: '#C9DB8A' }}>✓ {L('standards.today_ru')}</span>}
                   </div>
                 </Card>
               </motion.div>
@@ -153,10 +151,8 @@ export default function Standards() {
           transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
           className="space-y-4"
         >
-          <p className="eyebrow" style={{ color: '#FBBF24' }}>Источник: калькуляции ТТК сети</p>
-          <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#666666' }}>
-            Все значения взяты из калькуляций ТТК сети и вынесены в один раздел. Изменение в одном месте обновляет тесты, ТТК-карточки и чек-листы.
-          </p>
+          <p className="eyebrow" style={{ color: '#FBBF24' }}>{L('standards.src_ru')}</p>
+          <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#666666' }}>{L('standards.desc_ru')}</p>
           <div className="mt-4 space-y-3">
             {timeStandards.map((t) => (
               <Card key={t.drink} light className="flex items-start justify-between gap-3 p-4">
@@ -172,10 +168,8 @@ export default function Standards() {
             ))}
           </div>
           <div className="rounded-card bg-surface p-4" style={{ border: '1px dashed #3A3A3D' }}>
-            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Настраиваемые значения</p>
-            <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>
-              Каждое значение: целевое время, допуск, категория напитка, источник, дата обновления. Редактируйте здесь — обновится везде.
-            </p>
+            <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('standards.custom_ru')}</p>
+            <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>{L('standards.custom_desc_ru')}</p>
           </div>
         </motion.div>
       )}

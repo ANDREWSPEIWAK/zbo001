@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { actions, useStore } from './store'
 import { Toasts } from './components/app-ui'
 import { rankFor } from './data/gamification'
+import { t, type Lang } from './lang'
 import Path from './sections/Path'
 import Ttk from './sections/Ttk'
 import Tests from './sections/Tests'
@@ -14,6 +15,7 @@ import Standards from './sections/Standards'
 import Resources from './sections/Resources'
 import Settings from './sections/Settings'
 import Profile from './sections/Profile'
+import AuthScreen from './components/AuthScreen'
 import {
   Menu, X, User, Home, BookOpen, Target, GraduationCap, Sparkles, Clock, ShieldCheck, FileText, Globe, Settings as SettingsIcon,
   type LucideIcon,
@@ -24,20 +26,20 @@ type AppTab =
   | 'shift' | 'discipline' | 'standards' | 'resources' | 'settings'
 type DrawerItem = 'shift' | 'discipline' | 'standards' | 'resources' | 'settings'
 
-const bottomTabs: { id: AppTab; label: string; Icon: LucideIcon }[] = [
-  { id: 'path', label: 'Путь', Icon: Home },
-  { id: 'ttk', label: 'ТТК', Icon: BookOpen },
-  { id: 'tests', label: 'Тесты', Icon: Target },
-  { id: 'library', label: 'Методики', Icon: GraduationCap },
-  { id: 'wheel', label: 'Вкусы', Icon: Sparkles },
+const bottomTabs: { id: AppTab; labelRu: string; labelEn: string; Icon: LucideIcon }[] = [
+  { id: 'path', labelRu: 'Путь', labelEn: 'Path', Icon: Home },
+  { id: 'ttk', labelRu: 'ТТК', labelEn: 'Recipes', Icon: BookOpen },
+  { id: 'tests', labelRu: 'Тесты', labelEn: 'Tests', Icon: Target },
+  { id: 'library', labelRu: 'Методики', labelEn: 'Methods', Icon: GraduationCap },
+  { id: 'wheel', labelRu: 'Вкусы', labelEn: 'Tastes', Icon: Sparkles },
 ]
 
-const drawerItems: { id: DrawerItem; label: string; Icon: LucideIcon }[] = [
-  { id: 'shift', label: 'Смена', Icon: Clock },
-  { id: 'discipline', label: 'Дисциплина', Icon: ShieldCheck },
-  { id: 'standards', label: 'Стандарты и чек-листы', Icon: FileText },
-  { id: 'resources', label: 'Ресурсы', Icon: Globe },
-  { id: 'settings', label: 'Настройки', Icon: SettingsIcon },
+const drawerItems: { id: DrawerItem; labelRu: string; labelEn: string; Icon: LucideIcon }[] = [
+  { id: 'shift', labelRu: 'Смена', labelEn: 'Shift', Icon: Clock },
+  { id: 'discipline', labelRu: 'Дисциплина', labelEn: 'Discipline', Icon: ShieldCheck },
+  { id: 'standards', labelRu: 'Стандарты и чек-листы', labelEn: 'Standards & Checklists', Icon: FileText },
+  { id: 'resources', labelRu: 'Ресурсы', labelEn: 'Resources', Icon: Globe },
+  { id: 'settings', labelRu: 'Настройки', labelEn: 'Settings', Icon: SettingsIcon },
 ]
 
 export default function App() {
@@ -45,11 +47,29 @@ export default function App() {
   const [tab, setTab] = useState<AppTab>('path')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [lang, setLang] = useState<Lang>('ru')
+  const [authed, setAuthed] = useState(false)
   const r = rankFor(s.xp)
+
+  // Load saved language
+  useEffect(() => {
+    const saved = localStorage.getItem('202f-lang') as Lang | null
+    if (saved && (saved === 'ru' || saved === 'en')) setLang(saved)
+    // Auto-login check: if there's saved progress, consider authed
+    const hasProgress = s.xp > 0 || Object.keys(s.known).length > 0 || s.days.length > 0
+    if (hasProgress) setAuthed(true)
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('202f-lang', lang)
+    document.documentElement.lang = lang
+  }, [lang])
 
   useEffect(() => {
     actions.dayOpened()
   }, [])
+
+  const L = (key: string) => t(key, lang)
 
   const go = (t: AppTab) => {
     setTab(t)
@@ -64,6 +84,15 @@ export default function App() {
 
   const bottomActive = bottomTabs.some((b) => b.id === tab) ? tab : null
 
+  // If not authenticated, show auth screen
+  if (!authed) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+        <AuthScreen onAuth={() => setAuthed(true)} />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-bg text-white" style={{ paddingBottom: 92 }}>
       <Toasts />
@@ -72,7 +101,7 @@ export default function App() {
       <header className="sticky top-0 z-40 flex items-center justify-between px-4" style={{ height: 56, paddingTop: 'env(safe-area-inset-top)', background: '#0F0F10' }}>
         <button
           type="button"
-          aria-label="Меню"
+          aria-label={L('app.menu_ru') === 'Menu' ? L('app.menu_en') : L('app.menu_ru')}
           onClick={() => setDrawerOpen(true)}
           className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full btn-press"
           style={{ background: '#1A1A1C', border: '1px solid #3A3A3D', color: '#FFFFFF' }}
@@ -90,7 +119,7 @@ export default function App() {
 
         <button
           type="button"
-          aria-label="Профиль"
+          aria-label={L('app.profile_ru') === 'Profile' ? L('app.profile_en') : L('app.profile_ru')}
           onClick={() => setProfileOpen(true)}
           className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full btn-press btn-selected"
           style={{ background: '#8B5CF6', color: '#FFFFFF' }}
@@ -116,16 +145,16 @@ export default function App() {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="space-y-6"
           >
-            {tab === 'path' && <Path />}
-            {tab === 'ttk' && <Ttk />}
-            {tab === 'tests' && <Tests />}
-            {tab === 'library' && <Library />}
-            {tab === 'wheel' && <Wheel />}
-            {tab === 'shift' && <Shift />}
-            {tab === 'discipline' && <Discipline />}
-            {tab === 'standards' && <Standards />}
-            {tab === 'resources' && <Resources />}
-            {tab === 'settings' && <Settings />}
+            {tab === 'path' && <Path lang={lang} />}
+            {tab === 'ttk' && <Ttk lang={lang} />}
+            {tab === 'tests' && <Tests lang={lang} />}
+            {tab === 'library' && <Library lang={lang} />}
+            {tab === 'wheel' && <Wheel lang={lang} />}
+            {tab === 'shift' && <Shift lang={lang} />}
+            {tab === 'discipline' && <Discipline lang={lang} />}
+            {tab === 'standards' && <Standards lang={lang} />}
+            {tab === 'resources' && <Resources lang={lang} />}
+            {tab === 'settings' && <Settings lang={lang} />}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -144,11 +173,12 @@ export default function App() {
           {bottomTabs.map((b) => {
             const Icon = b.Icon
             const active = bottomActive === b.id
+            const label = lang === 'ru' ? b.labelRu : b.labelEn
             return (
               <motion.button
                 key={b.id}
                 type="button"
-                aria-label={b.label}
+                aria-label={label}
                 onClick={() => go(b.id)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -191,7 +221,7 @@ export default function App() {
           >
             <button
               type="button"
-              aria-label="Закрыть"
+              aria-label={L('app.menu_ru') === 'Menu' ? L('app.menu_en') : L('app.menu_ru')}
               onClick={() => setDrawerOpen(false)}
               className="absolute -right-[48px] top-4 flex h-[44px] w-[44px] items-center justify-center rounded-full btn-press"
               style={{ background: '#1A1A1C', border: '1px solid #3A3A3D', color: '#FFFFFF' }}
@@ -211,11 +241,12 @@ export default function App() {
               <div className="space-y-1">
                 {drawerItems.map((item) => {
                   const Icon = item.Icon
+                  const label = lang === 'ru' ? item.labelRu : item.labelEn
                   return (
                     <motion.button
                       key={item.id}
                       type="button"
-                      aria-label={item.label}
+                      aria-label={label}
                       onClick={() => goDrawer(item.id)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -227,7 +258,7 @@ export default function App() {
                         <Icon size={18} strokeWidth={1.8} strokeLinecap="round" />
                       </span>
                       <span className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>
-                        {item.label}
+                        {label}
                       </span>
                     </motion.button>
                   )
@@ -252,7 +283,7 @@ export default function App() {
                   className="mt-3 w-full rounded-btn px-4 py-2.5 text-[12px] font-extrabold uppercase"
                   style={{ background: '#111111', color: '#FFFFFF', height: 44 }}
                 >
-                  Профиль
+                  {L('app.profile_ru') === 'Profile' ? L('app.profile_en') : L('app.profile_ru')}
                 </motion.button>
               </div>
             </div>
@@ -270,7 +301,7 @@ export default function App() {
             style={{ background: 'rgba(0,0,0,0.55)' }}
             onClick={() => setProfileOpen(false)}
           />
-          <Profile onClose={() => setProfileOpen(false)} />
+          <Profile onClose={() => setProfileOpen(false)} lang={lang} />
         </>
       )}
     </div>

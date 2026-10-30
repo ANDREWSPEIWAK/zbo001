@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { actions, useStore } from '../store'
 import { badges, ranks, rankFor } from '../data/gamification'
 import { ProgressBar, ProgressRing, Card } from '../components/app-ui'
 
-export default function Profile({ onClose }: { onClose: () => void }) {
+export default function Profile({ onClose, lang }: { onClose: () => void; lang: Lang }) {
+  const L = (key: string) => t(key, lang)
+
   if (onClose) {
     return (
       <motion.div
@@ -25,10 +28,10 @@ export default function Profile({ onClose }: { onClose: () => void }) {
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
         >
           <div className="flex items-start justify-between mb-4">
-            <h2 className="font-display text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>Профиль</h2>
-            <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>Закрыть</button>
+            <h2 className="font-display text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{L('profile.title_ru')}</h2>
+            <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>{L('profile.close_ru')}</button>
           </div>
-          <ProfileBody />
+          <ProfileBody lang={lang} />
         </motion.div>
       </motion.div>
     )
@@ -42,14 +45,15 @@ export default function Profile({ onClose }: { onClose: () => void }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
         <p className="eyebrow">Ваша карьера в сети</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Профиль</h1>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('profile.title_ru')}</h1>
       </motion.div>
-      <ProfileBody />
+      <ProfileBody lang={lang} />
     </div>
   )
 }
 
-function ProfileBody() {
+function ProfileBody({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [confirm, setConfirm] = useState(false)
   const r = rankFor(s.xp)
@@ -154,25 +158,17 @@ function ProfileBody() {
         className="space-y-3"
       >
         <Card light className="space-y-3">
-          <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>Сброс прогресса</p>
-          <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>
-            Прогресс хранится только в этом браузере. Сброс удалит XP, бейджи и историю.
-          </p>
+          <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{L('profile.reset_ru')}</p>
+          <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>{L('profile.reset_desc_ru')}</p>
           {!confirm ? (
             <button onClick={() => setConfirm(true)} className="mt-3 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
-              style={{ borderColor: '#F87171', color: '#F87171' }}>
-              Сбросить всё
-            </button>
+              style={{ borderColor: '#F87171', color: '#F87171' }}>{L('profile.reset_btn_ru')}</button>
           ) : (
             <div className="mt-3 flex items-start gap-2">
               <button onClick={() => { actions.resetAll(); setConfirm(false) }} className="rounded-[22px] px-4 py-2 text-[12px] font-bold btn-press"
-                style={{ background: '#F87171', color: '#0F0F10' }}>
-                Да, с нуля
-              </button>
+                style={{ background: '#F87171', color: '#0F0F10' }}>{L('profile.confirm_ru')}</button>
               <button onClick={() => setConfirm(false)} className="rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
-                style={{ borderColor: '#3A3A3D', color: '#0F0F10' }}>
-                Отмена
-              </button>
+                style={{ borderColor: '#3A3A3D', color: '#0F0F10' }}>{L('profile.cancel_ru')}</button>
             </div>
           )}
         </Card>

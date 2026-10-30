@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { libraryTopics, libraryItems, type LibraryTopic } from '../data/library'
 import { Card, Button } from '../components/app-ui'
 
-export default function Library() {
+export default function Library({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const [open, setOpen] = useState<LibraryTopic | null>(null)
 
   if (open) return (
@@ -14,7 +16,7 @@ export default function Library() {
         className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
         style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}
       >
-        ← Методики
+        ← {L('library.back_ru')}
       </motion.button>
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -22,7 +24,7 @@ export default function Library() {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
         <p className="eyebrow" style={{ color: '#8B5CF6' }}>{open.kicker}</p>
-        <h1 className="font-display mt-1 text-[25px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{open.title}</h1>
+        <h1 className="font-display mt-1 text-[25px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{open.title}</h1>
         <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{open.blurb}</p>
       </motion.div>
       <div className="space-y-4">
@@ -70,7 +72,7 @@ export default function Library() {
                       Видео: {item.youtube.title}
                     </a>
                   )}
-                  <Button variant="ghost" className="flex-1" style={{ height: 44, padding: '0 12px', fontSize: '11px' }}>Открыть урок</Button>
+                  <Button variant="ghost" className="flex-1" style={{ height: 44, padding: '0 12px', fontSize: '11px' }}>{L('library.open_lesson_ru')}</Button>
                 </div>
               </Card>
             </motion.div>
@@ -89,7 +91,7 @@ export default function Library() {
         className="space-y-2"
       >
         <p className="eyebrow">Методика сети</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Методики</h1>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('library.title_ru')}</h1>
         <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{libraryTopics.length} тем: латте-арт, фильтр, сервис, сенсорика и другое.</p>
       </motion.div>
       <motion.div

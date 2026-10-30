@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
+import { t, type Lang } from '../lang'
 import { recipes, ttkCategories } from '../data/recipes'
 import { examBlocks, examQuestions } from '../data/exam'
 import { serviceCases } from '../data/cases'
@@ -81,7 +82,8 @@ function OptionBtn({ text, state, onClick }: { text: string; state: 'idle' | 'ri
   )
 }
 
-function Quiz({ onExit }: { onExit: () => void }) {
+function Quiz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const [qs] = useState(() => genQuiz(10))
   const [i, setI] = useState(0)
   const [picked, setPicked] = useState<number | null>(null)
@@ -103,7 +105,7 @@ function Quiz({ onExit }: { onExit: () => void }) {
     if (done) {
       const pct = Math.round((score / qs.length) * 100)
       actions.recordQuiz(pct)
-      actions.addXp(Math.round(pct / 5), 'квиз ТТК')
+      actions.addXp(Math.round(pct / 5), L('tests.quiz_ru'))
     }
   }, [done])
 
@@ -129,7 +131,7 @@ function Quiz({ onExit }: { onExit: () => void }) {
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>К тестам</button>
+          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>{L('tests.back_ru')}</button>
       </motion.div>
     )
   }
@@ -143,8 +145,8 @@ function Quiz({ onExit }: { onExit: () => void }) {
       className="space-y-4"
     >
       <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
-        <span>Вопрос {i + 1} / {qs.length}</span>
-        <span style={{ color: '#C9DB8A' }}>верно: {score}</span>
+        <span>{L('tests.question_ru')} {i + 1} / {qs.length}</span>
+        <span style={{ color: '#C9DB8A' }}>{L('tests.correct_ru')}: {score}</span>
       </div>
       <div className="mt-2"><ProgressBar value={(i / qs.length) * 100} color="#C9DB8A" /></div>
       <Card light className="mt-5 p-6 space-y-4">
@@ -169,14 +171,15 @@ function Quiz({ onExit }: { onExit: () => void }) {
           className="mt-4 w-full rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
           style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}
         >
-          {i + 1 === qs.length ? 'Результат' : 'Дальше →'}
+          {i + 1 === qs.length ? L('tests.result_ru') : L('tests.next_ru')}
         </motion.button>
       )}
     </motion.div>
   )
 }
 
-function Blitz({ onExit }: { onExit: () => void }) {
+function Blitz({ onExit, lang }: { onExit: () => void; lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const DURATION = 60
   const [left, setLeft] = useState(DURATION)
   const [q, setQ] = useState<QuizQ | null>(() => genQuiz(1)[0])
@@ -193,7 +196,7 @@ function Blitz({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (over) {
       actions.recordBlitz(correct)
-      actions.addXp(correct * 3, 'блиц «Час пик»')
+      actions.addXp(correct * 3, L('tests.blitz_ru'))
     }
   }, [over])
 
@@ -213,11 +216,11 @@ function Blitz({ onExit }: { onExit: () => void }) {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="rounded-card bg-surface p-8 text-left"
       >
-        <p className="eyebrow" style={{ color: '#8B5CF6' }}>Время вышло</p>
+        <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('tests.time_up_ru')}</p>
         <div className="flex items-start justify-between mt-3">
           <p className="font-display text-[48px] font-extrabold" style={{ color: '#F87171' }}>{correct}</p>
           <div>
-            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>верных из {total} за минуту</p>
+            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{correct} {L('tests.correct_ru')} из {total} за минуту</p>
             <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
               {correct >= 8
                 ? 'Машина потока. Утренний пик вам по плечу.'
@@ -228,7 +231,7 @@ function Blitz({ onExit }: { onExit: () => void }) {
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#F87171', color: '#0F0F10', height: 52 }}>К тестам</button>
+          style={{ background: '#F87171', color: '#0F0F10', height: 52 }}>{L('tests.back_ru')}</button>
       </motion.div>
     )
   }
@@ -243,8 +246,8 @@ function Blitz({ onExit }: { onExit: () => void }) {
       <div className="flex items-start justify-between">
         <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
-          <Pill color="#C9DB8A">обслужено {correct}</Pill>
-          <Pill color="#F87171">ушло {total - correct}</Pill>
+          <Pill color="#C9DB8A">{correct} {L('tests.served_ru')}</Pill>
+          <Pill color="#F87171">{total - correct} {L('tests.left_ru')}</Pill>
         </div>
       </div>
       <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#F87171' : '#FBBF24'} /></div>
@@ -262,7 +265,8 @@ function Blitz({ onExit }: { onExit: () => void }) {
   )
 }
 
-function Exam() {
+function Exam({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [block, setBlock] = useState(0)
   const [idx, setIdx] = useState(0)
@@ -294,20 +298,18 @@ function Exam() {
         ))}
       </div>
       <div className="mt-3 flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
-        <span>Вопрос {idx + 1} / {blockQs.length}</span>
-        <span style={{ color: '#C9DB8A' }}>закрыто в блоке: {knownInBlock} / {blockQs.length} · всего {totalKnown} / 40</span>
+        <span>{L('tests.question_ru')} {idx + 1} / {blockQs.length}</span>
+        <span style={{ color: '#C9DB8A' }}>{knownInBlock} / {blockQs.length} · всего {totalKnown} / 40</span>
       </div>
       <div className="mt-2"><ProgressBar value={(knownInBlock / blockQs.length) * 100} color="#C9DB8A" /></div>
 
       {q ? (
         <Card light className="mt-4 p-6 space-y-4">
-          <p className="eyebrow" style={{ color: '#8B5CF6' }}>Ответьте вслух или про себя, затем сверьтесь с эталоном</p>
+          <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('tests.exam_instr_ru')}</p>
           <h3 className="font-display mt-3 text-[16px] font-extrabold leading-snug" style={{ color: '#0F0F10' }}>{q.prompt}</h3>
           {!revealed ? (
             <button onClick={() => setRevealed(true)} className="mt-6 w-full rounded-[26px] border px-4 py-3 text-[13px] font-bold btn-press"
-              style={{ borderColor: '#3A3A3D', color: '#0F0F10', height: 52 }}>
-              Показать эталон ответа
-            </button>
+              style={{ borderColor: '#3A3A3D', color: '#0F0F10', height: 52 }}>{L('tests.show_etalon_ru')}</button>
           ) : (
             <div>
               <div className="rounded-[16px] p-4 text-[13px] leading-relaxed" style={{ background: '#FFFFFF', color: '#0F0F10', border: '1px solid #C9DB8A55' }}>
@@ -344,7 +346,8 @@ function resultLabel(score: number): React.ReactNode {
   return 'Ошибка'
 }
 
-function Cases() {
+function Cases({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [i, setI] = useState(0)
   const [picked, setPicked] = useState<number | null>(null)
@@ -365,7 +368,7 @@ function Cases() {
       className="space-y-4"
     >
       <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
-        <span>Кейс {i + 1} / {serviceCases.length}</span>
+        <span>{L('tests.question_ru')} {i + 1} / {serviceCases.length}</span>
         <Pill color="#FBBF24">{c.block}</Pill>
       </div>
       <div className="mt-2"><ProgressBar value={(i / serviceCases.length) * 100} color="#FBBF24" /></div>
@@ -408,14 +411,15 @@ function Cases() {
   )
 }
 
-export default function Tests() {
+export default function Tests({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [mode, setMode] = useState<Mode>('hub')
 
-  if (mode === 'quiz') return <div><BackBtn onClick={() => setMode('hub')} /><Quiz onExit={() => setMode('hub')} /></div>
-  if (mode === 'blitz') return <div><BackBtn onClick={() => setMode('hub')} /><Blitz onExit={() => setMode('hub')} /></div>
-  if (mode === 'exam') return <div><BackBtn onClick={() => setMode('hub')} /><Exam /></div>
-  if (mode === 'cases') return <div><BackBtn onClick={() => setMode('hub')} /><Cases /></div>
+  if (mode === 'quiz') return <div><BackBtn onClick={() => setMode('hub')} lang={lang} /><Quiz onExit={() => setMode('hub')} lang={lang} /></div>
+  if (mode === 'blitz') return <div><BackBtn onClick={() => setMode('hub')} lang={lang} /><Blitz onExit={() => setMode('hub')} lang={lang} /></div>
+  if (mode === 'exam') return <div><BackBtn onClick={() => setMode('hub')} lang={lang} /><Exam lang={lang} /></div>
+  if (mode === 'cases') return <div><BackBtn onClick={() => setMode('hub')} lang={lang} /><Cases lang={lang} /></div>
 
   const knownCount = Object.values(s.known).filter(Boolean).length
   const totalTtk = recipes.length
@@ -446,9 +450,9 @@ export default function Tests() {
         className="space-y-2"
       >
         <p className="eyebrow">Проверка знаний</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Тесты и экзамен</h1>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('tests.title_ru')}</h1>
         <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
-          Четыре формата: от быстрого блица до полной аттестации. ТТК выучено: {knownCount} / {totalTtk} — квиз берёт вопросы из всего меню.
+          {L('tests.subtitle_ru')} {knownCount} / {totalTtk} — квиз берёт вопросы из всего меню.
         </p>
       </motion.div>
       <motion.div
@@ -477,7 +481,8 @@ export default function Tests() {
   )
 }
 
-function BackBtn({ onClick }: { onClick: () => void }) {
+function BackBtn({ onClick, lang }: { onClick: () => void; lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   return (
     <motion.button onClick={onClick}
       whileHover={{ scale: 1.01 }}
@@ -485,7 +490,7 @@ function BackBtn({ onClick }: { onClick: () => void }) {
       className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
       style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}
     >
-      ← Все тесты
+      ← {L('tests.back_ru')}
     </motion.button>
   )
 }

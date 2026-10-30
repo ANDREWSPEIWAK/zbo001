@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
+import { t, type Lang } from '../lang'
 import { levels, modules, attestations } from '../data/curriculum'
 import { rankFor, badges } from '../data/gamification'
 import { recipes } from '../data/recipes'
 import { ProgressRing, ProgressBar, Card, Button, Pill } from '../components/app-ui'
 
-export default function Path() {
+export default function Path({ lang }: { lang: Lang }) {
   const s = useStore()
   const r = rankFor(s.xp)
   const knownCount = Object.values(s.known).filter(Boolean).length
@@ -16,13 +17,16 @@ export default function Path() {
   const examTotal = Object.values(s.examKnown).filter(Boolean).length
   const totalExam = 40
 
-  const greeting = useMemo(() => {
+  const L = (key: string) => t(key, lang)
+
+  const greetingKey = useMemo(() => {
     const h = new Date().getHours()
-    if (h < 6) return 'Ночная смена? Уважаю'
-    if (h < 12) return 'Утренний пик ждёт'
-    if (h < 18) return 'Дневной поток'
-    return 'Вечерний сервис'
+    if (h < 6) return 'path.greeting_night_ru'
+    if (h < 12) return 'path.greeting_morning_ru'
+    if (h < 18) return 'path.greeting_day_ru'
+    return 'path.greeting_evening_ru'
   }, [])
+  const greeting = L(greetingKey)
 
   const nextModule = useMemo(() => {
     for (const lv of levels) {
@@ -34,15 +38,15 @@ export default function Path() {
   }, [s.modulesDone])
 
   const blocks = [
-    { id: 'ttk', title: 'ТТК', value: `${knownCount}`, total: `${totalTtk}`, color: '#C9DB8A' },
-    { id: 'lessons', title: 'Методики', value: `${lessonsCount}`, total: `${totalLessons}`, color: '#C9DB8A' },
-    { id: 'exam', title: 'Экзамен', value: `${examTotal}`, total: `${totalExam}`, color: '#FBBF24' },
-    { id: 'badges', title: 'Бейджи', value: `${s.earnedBadges.length}`, total: `${badges.length}`, color: '#FBBF24' },
+    { id: 'ttk', title: L('path.block_ttk_ru'), value: `${knownCount}`, total: `${totalTtk}`, color: '#C9DB8A' },
+    { id: 'lessons', title: L('path.block_lessons_ru'), value: `${lessonsCount}`, total: `${totalLessons}`, color: '#C9DB8A' },
+    { id: 'exam', title: L('path.block_exam_ru'), value: `${examTotal}`, total: `${totalExam}`, color: '#FBBF24' },
+    { id: 'badges', title: L('path.block_badges_ru'), value: `${s.earnedBadges.length}`, total: `${badges.length}`, color: '#FBBF24' },
   ]
 
   const continueTarget = nextModule
     ? { label: nextModule.m.title, subtitle: nextModule.lv.title, id: nextModule.m.id }
-    : { label: 'Все модули пройдены', subtitle: 'Проверьте бейджи и аттестацию', id: '' }
+    : { label: L('path.path_completed_ru'), subtitle: '', id: '' }
 
   return (
     <div className="space-y-6">
@@ -55,7 +59,7 @@ export default function Path() {
         <div>
           <p className="eyebrow">{greeting}</p>
           <h1 className="mt-1 font-display text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>
-            Твой путь <span style={{ color: '#C9DB8A' }}>бариста</span>
+            {L('path.title_ru')} <span style={{ color: '#C9DB8A' }}>бариста</span>
           </h1>
         </div>
         <div className="flex items-center gap-3">
@@ -69,7 +73,6 @@ export default function Path() {
         </div>
       </motion.div>
 
-      {/* Продолжить — главный шаг */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,7 +82,7 @@ export default function Path() {
         <Card light accent="#FBBF24" className="space-y-3">
           <div className="flex items-start gap-4">
             <div className="flex-1">
-              <p className="eyebrow" style={{ color: '#8B5CF6' }}>Что сделать сейчас</p>
+              <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('path.continue_ru')}</p>
               <h2 className="font-display mt-1 text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
                 Продолжить {continueTarget.id ? '«' + continueTarget.label + '»' : ''}
               </h2>
@@ -91,16 +94,15 @@ export default function Path() {
           </div>
           {continueTarget.id && (
             <Button onClick={() => actions.completeModule(continueTarget.id)} className="mt-3 w-full" style={{ height: 44, fontSize: '12px' }}>
-              Открыть модуль · +40 XP
+              {L('path.open_module_ru')}
             </Button>
           )}
           {!continueTarget.id && (
-            <p className="mt-3 text-[12px] font-bold text-left" style={{ color: '#C9DB8A' }}>Программа пройдена — перейдите к аттестации.</p>
+            <p className="mt-3 text-[12px] font-bold text-left" style={{ color: '#C9DB8A' }}>{L('path.path_completed_ru')}</p>
           )}
         </Card>
       </motion.div>
 
-      {/* Прогресс-кольца по блокам */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -123,7 +125,6 @@ export default function Path() {
         ))}
       </motion.div>
 
-      {/* Квесты дня */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,8 +133,8 @@ export default function Path() {
       >
         <div className="p-5">
           <div className="flex items-start justify-between mb-4">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Квесты дня</h2>
-            <Pill color="#FBBF24">обновятся завтра</Pill>
+            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>{L('path.quests_ru')}</h2>
+            <Pill color="#FBBF24">{L('path.quests_update_ru')}</Pill>
           </div>
           <div className="space-y-3">
             {s.quests.items.map((q) => (
@@ -157,14 +158,13 @@ export default function Path() {
         </div>
       </motion.div>
 
-      {/* Уровни */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.4 }}
         className="space-y-3"
       >
-        <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#FFFFFF' }}>Уровни карьеры</h2>
+        <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#FFFFFF' }}>{L('path.levels_ru')}</h2>
         <div className="mt-3 space-y-3">
           {levels.map((lv) => {
             const mods = modules.filter((m) => m.levelId === lv.id)
@@ -233,7 +233,7 @@ export default function Path() {
       </motion.div>
 
       <div className="text-left text-[11px]" style={{ color: '#666666' }}>
-        Источник норм и времени: калькуляции ТТК сети. Прогресс хранится только в этом браузере.
+        {L('path.source_ru')}
       </div>
     </div>
   )

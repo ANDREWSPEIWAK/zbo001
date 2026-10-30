@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { disciplineChecklists, disciplineRules, levelLabels } from '../data/discipline'
 import { Card, Button, Chip } from '../components/app-ui'
 
-export default function Discipline() {
+export default function Discipline({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const [tab, setTab] = useState<'rules' | 'checklists'>('rules')
 
   return (
@@ -15,10 +17,8 @@ export default function Discipline() {
         className="space-y-2"
       >
         <p className="eyebrow">Дисциплина сети</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Дисциплина</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
-          Правила, нарушения стандартов и способы исправления — только из внутренних документов сети.
-        </p>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('discipline.title_ru')}</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('discipline.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -27,8 +27,8 @@ export default function Discipline() {
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
         className="no-scrollbar flex gap-2 overflow-x-auto"
       >
-        <Chip active={tab === 'rules'} onClick={() => setTab('rules')}>Правила</Chip>
-        <Chip active={tab === 'checklists'} onClick={() => setTab('checklists')}>Чек-листы смены</Chip>
+        <Chip active={tab === 'rules'} onClick={() => setTab('rules')}>{L('discipline.rules_ru')}</Chip>
+        <Chip active={tab === 'checklists'} onClick={() => setTab('checklists')}>{L('discipline.checklists_ru')}</Chip>
       </motion.div>
 
       {tab === 'rules' && (
@@ -62,11 +62,11 @@ export default function Discipline() {
                   <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.rule}</p>
                   <div className="mt-3 grid gap-2">
                     <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                      <p className="eyebrow mb-1" style={{ color: '#8B5CF6' }}>Почему это важно</p>
+                      <p className="eyebrow mb-1" style={{ color: '#8B5CF6' }}>{L('discipline.why_ru')}</p>
                       <p className="text-[12px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.why}</p>
                     </div>
                     <div className="rounded-[20px] p-3" style={{ background: '#FFFFFF' }}>
-                      <p className="eyebrow mb-1" style={{ color: '#F87171' }}>Как исправлять</p>
+                      <p className="eyebrow mb-1" style={{ color: '#F87171' }}>{L('discipline.how_ru')}</p>
                       <p className="text-[12px] leading-relaxed" style={{ color: '#0F0F10' }}>{r.how}</p>
                     </div>
                   </div>
@@ -109,7 +109,7 @@ export default function Discipline() {
                     </div>
                   ))}
                 </div>
-                <Button variant="secondary" className="mt-3 w-auto" style={{ height: 44, padding: '0 14px', fontSize: '12px' }}>Открыть в разделе «Стандарты»</Button>
+                <Button variant="secondary" className="mt-3 w-auto" style={{ height: 44, padding: '0 14px', fontSize: '12px' }}>{L('discipline.open_std_ru')}</Button>
               </Card>
             </motion.div>
           ))}

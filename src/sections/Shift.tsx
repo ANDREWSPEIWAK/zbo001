@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { t, type Lang } from '../lang'
 import { actions, useStore } from '../store'
 import { barPositions, serviceFlow, timeStandards, sequenceRules, rushDrinks, rushStepsLegend, type RushDrink } from '../data/service'
 import { Chip, ProgressBar, Pill, Card } from '../components/app-ui'
@@ -11,7 +12,8 @@ interface ActiveOrder {
   patience: number
 }
 
-function Rush({ onExit }: { onExit: () => void }) {
+function Rush({ onExit, lang }: { onExit: () => void; lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const DURATION = 60
   const [left, setLeft] = useState(DURATION)
   const [orders, setOrders] = useState<ActiveOrder[]>([])
@@ -46,7 +48,7 @@ function Rush({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (over) {
       actions.recordRush(served)
-      actions.addXp(served * 5, 'Rush-симулятор')
+      actions.addXp(served * 5, L('shift.rush_title_ru'))
     }
   }, [over])
 
@@ -82,11 +84,11 @@ function Rush({ onExit }: { onExit: () => void }) {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="rounded-card bg-surface p-8 text-left"
       >
-        <p className="eyebrow" style={{ color: '#8B5CF6' }}>Смена окончена</p>
+        <p className="eyebrow" style={{ color: '#8B5CF6' }}>{L('shift.shift_end_ru')}</p>
         <div className="flex items-start justify-between mt-3">
           <p className="font-display text-[48px] font-extrabold" style={{ color: '#C9DB8A' }}>{served}</p>
           <div>
-            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>гостей обслужено · потеряно: {lost}</p>
+            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{served} {L('shift.served_ru')} {lost}</p>
             <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
               {served >= 6
                 ? 'Машина потока. Поток не остановить — так держат утро в пике.'
@@ -97,7 +99,7 @@ function Rush({ onExit }: { onExit: () => void }) {
           </div>
         </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
-          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>Вернуться к смене</button>
+          style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>{L('shift.return_ru')}</button>
       </motion.div>
     )
   }
@@ -112,8 +114,8 @@ function Rush({ onExit }: { onExit: () => void }) {
       <div className="flex items-start justify-between">
         <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
-          <Pill color="#C9DB8A">обслужено {served}</Pill>
-          <Pill color="#F87171">ушло {lost}</Pill>
+          <Pill color="#C9DB8A">{served} {L('tests.served_ru')}</Pill>
+          <Pill color="#F87171">{lost} {L('tests.left_ru')}</Pill>
         </div>
       </div>
       <div className="mt-2"><ProgressBar value={(left / DURATION) * 100} color={left <= 10 ? '#F87171' : '#FBBF24'} /></div>
@@ -175,7 +177,8 @@ function Rush({ onExit }: { onExit: () => void }) {
   )
 }
 
-export default function Shift() {
+export default function Shift({ lang }: { lang: Lang }) {
+  const L = (key: string) => t(key, lang)
   const s = useStore()
   const [tab, setTab] = useState<'model' | 'standards' | 'rush'>('model')
   const [rushOn, setRushOn] = useState(false)
@@ -189,10 +192,8 @@ export default function Shift() {
         className="space-y-2"
       >
         <p className="eyebrow">Смена · сервис и тайминг</p>
-        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Смена как система</h1>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
-          Модель высокопоточного бара: позиции, поток, секвенсинг и стандарты времени. Цифры — из калькуляций ТТК сети.
-        </p>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>{L('shift.title_ru')}</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>{L('shift.subtitle_ru')}</p>
       </motion.div>
 
       <motion.div
@@ -367,16 +368,16 @@ export default function Shift() {
                 className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
                 style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}
               >
-                ← Назад
+                ← {L('shift.back_ru')}
               </motion.button>
-              <Rush onExit={() => setRushOn(false)} />
+              <Rush onExit={() => setRushOn(false)} lang={lang} />
             </>
           ) : (
             <Card light className="p-8 text-center">
               <p className="eyebrow" style={{ color: '#F87171' }}>Тренажёр потока</p>
-              <h2 className="font-display mt-2 text-[22px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>Rush-симулятор</h2>
+              <h2 className="font-display mt-2 text-[22px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{L('shift.rush_title_ru')}</h2>
               <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed" style={{ color: '#666666' }}>
-                60 секунд утреннего пика. Гости приходят с заказами, терпение тает. Собирайте напитки по шагам из ТТК, обслуживайте самые горячие заказы первыми.
+                {L('shift.rush_desc_ru')}
               </p>
               <p className="mt-4 text-[13px] font-bold" style={{ color: '#C9DB8A' }}>Рекорд: {s.rushBest} гостей</p>
               <motion.button onClick={() => setRushOn(true)}
@@ -385,7 +386,7 @@ export default function Shift() {
                 className="mt-6 rounded-[26px] px-10 py-4 text-[13px] font-extrabold uppercase btn-press"
                 style={{ background: '#F87171', color: '#0F0F10', height: 52 }}
               >
-                Начать смену
+                {L('shift.start_ru')}
               </motion.button>
             </Card>
           )}
