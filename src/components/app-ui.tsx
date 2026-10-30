@@ -2,7 +2,7 @@ import { useStore } from '../store'
 import { useState } from 'react'
 
 /* ---------- ProgressBar ---------- */
-export function ProgressBar({ value, color = '#C9D98A', track = '#2A2A2D', h = 8 }: { value: number; color?: string; track?: string; h?: number }) {
+export function ProgressBar({ value, color = '#C9DB8A', track = '#2A2A2D', h = 8 }: { value: number; color?: string; track?: string; h?: number }) {
   return (
     <div className="w-full overflow-hidden rounded-[4px]" style={{ height: h, background: track }}>
       <div
@@ -14,16 +14,15 @@ export function ProgressBar({ value, color = '#C9D98A', track = '#2A2A2D', h = 8
 }
 
 /* ---------- Card ---------- */
-export function Card({ children, className = '', accent, light = false }: {
+export function Card({ children, className = '', accent, light = true }: {
   children: React.ReactNode; className?: string; accent?: string; light?: boolean
 }) {
-  const bg = light || !accent ? '#E8E6DF' : accent
-  // plum/violet -> white text handled by parent? We set text color via style on container only if accent dark
-  const textColor = accent === '#5B3FF0' || accent === '#523E80' ? '#FFFFFF' : (light ? '#111111' : (accent ? '#111111' : '#111111'))
+  const bg = light ? '#E8E6E1' : (accent || '#1B1B1D')
+  const textColor = light ? '#111111' : '#FFFFFF'
   return (
     <div
-      className={`rounded-card p-4 ${className}`}
-      style={{ background: bg, color: textColor }}
+      className={`rounded-card p-5 ${className} btn-press`}
+      style={{ background: bg, color: textColor, border: accent ? `1px solid ${accent}` : 'none' }}
     >
       {children}
     </div>
@@ -31,13 +30,13 @@ export function Card({ children, className = '', accent, light = false }: {
 }
 
 /* ---------- Pill ---------- */
-export function Pill({ children, color = '#5B3FF0', className = '' }: { children: React.ReactNode; color?: string; className?: string }) {
-  const light = color === '#FDC55E' || color === '#C9D98A' || color === '#EB5A52' || color === '#E8E6DF'
+export function Pill({ children, color = '#5B45F0', className = '' }: { children: React.ReactNode; color?: string; className?: string }) {
+  const light = color === '#FBC85F' || color === '#C9DB8A' || color === '#EE5A55' || color === '#E8E6E1'
   const textColor = light ? '#111111' : '#FFFFFF'
   return (
     <span
-      className={`inline-flex items-center rounded-pill px-[12px] py-[5px] text-[12px] font-bold uppercase ${className}`}
-      style={{ background: color, color: textColor, fontFamily: 'Manrope, sans-serif' }}
+      className={`inline-flex items-center rounded-[22px] px-[14px] py-[7px] text-[12px] font-bold uppercase ${className}`}
+      style={{ background: color, color: textColor, fontFamily: 'Manrope, sans-serif', height: 44, display: 'inline-flex', alignItems: 'center' }}
     >
       {children}
     </span>
@@ -52,12 +51,15 @@ export function Chip({ children, active = false, onClick, className = '' }: {
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-chip px-[14px] py-[8px] text-[13px] font-bold transition-all ${className}`}
+      className={`shrink-0 rounded-[22px] px-[14px] py-[7px] text-[13px] font-bold transition-all ${className} btn-press`}
       style={{
-        background: active ? '#C9D98A' : 'transparent',
+        background: active ? '#C9DB8A' : 'transparent',
         color: active ? '#111111' : '#FFFFFF',
-        border: active ? 'none' : '1px solid #3A3A3D',
+        border: active ? 'none' : '1px solid #2A2A2D',
         fontFamily: 'Manrope, sans-serif',
+        height: 44,
+        display: 'inline-flex',
+        alignItems: 'center',
       }}
     >
       {children}
@@ -65,39 +67,20 @@ export function Chip({ children, active = false, onClick, className = '' }: {
   )
 }
 
-/* ---------- Tile ---------- */
-export function Tile({ name, color, onClick, className = '' }: {
-  name: string; color: string; onClick?: () => void; className?: string
-}) {
-  const light = color === '#FDC55E' || color === '#C9D98A' || color === '#EB5A52' || color === '#E8E6DF'
-  const textColor = light ? '#111111' : '#FFFFFF'
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex h-[96px] w-full items-center justify-center rounded-tile ${className}`}
-      style={{ background: color, color: textColor }}
-    >
-      <span className="text-center font-display text-[14px] font-extrabold uppercase leading-[1.15]">
-        {name}
-      </span>
-    </button>
-  )
-}
-
 /* ---------- Button ---------- */
 export function Button({ children, variant = 'primary', className = '', ...props }: {
-  children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost'; className?: string
+  children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost' | 'danger'; className?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const styles: Record<string, React.CSSProperties> = {
-    primary: { background: '#111111', color: '#FFFFFF', height: 48, borderRadius: 24 },
-    secondary: { background: '#C9D98A', color: '#111111', height: 48, borderRadius: 24 },
-    ghost: { background: 'transparent', color: '#FFFFFF', height: 48, borderRadius: 24, border: '1px solid #3A3A3D' },
+    primary: { background: '#111111', color: '#FFFFFF', height: 52, borderRadius: 26 },
+    secondary: { background: '#C9DB8A', color: '#111111', height: 52, borderRadius: 26 },
+    ghost: { background: 'transparent', color: '#FFFFFF', height: 52, borderRadius: 26, border: '1px solid #2A2A2D' },
+    danger: { background: '#EE5A55', color: '#111111', height: 52, borderRadius: 26 },
   }
   return (
     <button
-      className={`w-full px-4 font-display text-[13px] font-extrabold uppercase transition-transform active:scale-[0.96] ${className}`}
-      style={{ ...styles[variant], fontFamily: 'Unbounded, sans-serif' }}
+      className={`w-full px-4 font-display text-[13px] font-extrabold uppercase transition-transform btn-press ${className}`}
+      style={{ ...styles[variant], fontFamily: 'Unbounded, sans-serif', ...(props.style || {}) }}
       {...props}
     >
       {children}
@@ -110,7 +93,7 @@ export function Input({ className = '', ...props }: React.InputHTMLAttributes<HT
   return (
     <input
       className={`h-[44px] w-full rounded-[22px] border px-4 text-[13px] outline-none ${className}`}
-      style={{ borderColor: '#3A3A3D', background: '#1B1B1D', color: '#FFFFFF' }}
+      style={{ borderColor: '#2A2A2D', background: '#1B1B1D', color: '#FFFFFF' }}
       {...props}
     />
   )
@@ -122,7 +105,7 @@ export function Search({ value, onChange, placeholder, onFilter }: {
 }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex h-[48px] flex-1 items-center rounded-[24px] px-4" style={{ background: '#E8E6DF', color: '#111111' }}>
+      <div className="flex h-[48px] flex-1 items-center rounded-[24px] px-4" style={{ background: '#E8E6E1', color: '#111111' }}>
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -135,8 +118,8 @@ export function Search({ value, onChange, placeholder, onFilter }: {
         type="button"
         onClick={onFilter}
         aria-label="Фильтр"
-        className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full"
-        style={{ background: '#5B3FF0', color: '#FFFFFF' }}
+        className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full btn-press"
+        style={{ background: '#5B45F0', color: '#FFFFFF' }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
@@ -151,7 +134,7 @@ export function ChecklistRow({ checked, label, note, onToggle, disabled }: {
   checked: boolean; label: string; note?: string; onToggle?: () => void; disabled?: boolean
 }) {
   return (
-    <div className="flex items-start gap-3 border-t border-divider px-4 py-3" style={{ background: 'transparent' }}>
+    <div className="flex items-start gap-3 border-t border-solid border-[#CFCCC4] px-4 py-3 btn-press">
       <button
         type="button"
         disabled={disabled}
@@ -160,12 +143,12 @@ export function ChecklistRow({ checked, label, note, onToggle, disabled }: {
         className="mt-0.5 flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-[6px] border-2"
         style={{ borderColor: '#111111', background: checked ? '#111111' : 'transparent' }}
       >
-        {checked && <span style={{ color: '#C9D98A', fontSize: 12, fontWeight: 700 }}>✓</span>}
+        {checked && <span style={{ color: '#C9DB8A', fontSize: 12, fontWeight: 700 }}>✓</span>}
       </button>
-      <span className={`flex-1 text-[14px] font-bold ${checked ? 'line-through opacity-50' : ''}`} style={{ color: '#111111' }}>
+      <span className={`flex-1 text-[14px] font-bold leading-relaxed ${checked ? 'line-through opacity-50' : ''}`} style={{ color: '#111111' }}>
         {label}
       </span>
-      {note && <span className="text-right text-[11px]" style={{ color: '#555555' }}>{note}</span>}
+      {note && <span className="text-right text-[11px] font-bold" style={{ color: '#555555' }}>{note}</span>}
     </div>
   )
 }
@@ -176,26 +159,25 @@ export function AccordionRow({ title, subtitle, children, defaultOpen = false }:
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-[28px] bg-light text-ink overflow-hidden">
+    <div className="rounded-[28px] bg-surface text-ink overflow-hidden btn-press">
       <button
         type="button"
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
       >
         <div className="min-w-0 flex-1">
-          <p className="font-display text-[14px] font-extrabold uppercase" style={{ color: '#111111' }}>{title}</p>
-          {subtitle && <p className="mt-0.5 text-[12px]" style={{ color: '#555555' }}>{subtitle}</p>}
+          <p className="font-display text-[14px] font-extrabold uppercase leading-none" style={{ color: '#111111' }}>{title}</p>
+          {subtitle && <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#555555' }}>{subtitle}</p>}
         </div>
         <span className="text-[18px] transition-transform" style={{ color: '#111111', transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}>›</span>
       </button>
-      {open && <div className="border-t border-divider px-4 py-4 text-[13px]" style={{ color: '#111111' }}>{children}</div>}
+      {open && <div className="border-t border-solid border-[#CFCCC4] px-4 py-4 text-[13px] leading-relaxed" style={{ color: '#111111' }}>{children}</div>}
     </div>
   )
 }
 
-
-/* ---------- ProgressRing (kept) ---------- */
-export function ProgressRing({ value, size = 56, stroke = 4, color = '#C9D98A', track = '#2A2A2D', children }: {
+/* ---------- ProgressRing ---------- */
+export function ProgressRing({ value, size = 56, stroke = 4, color = '#C9DB8A', track = '#2A2A2D', children }: {
   value: number; size?: number; stroke?: number; color?: string; track?: string; children?: React.ReactNode
 }) {
   const r = (size - stroke) / 2
@@ -208,7 +190,7 @@ export function ProgressRing({ value, size = 56, stroke = 4, color = '#C9D98A', 
         <circle
           cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round"
-          style={{ transition: 'stroke-dashoffset .5s ease' }}
+          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>
@@ -221,16 +203,14 @@ export function SectionHead({ kicker, title }: { kicker: string; title: string }
   return (
     <div className="anim-rise">
       <p className="eyebrow">{kicker}</p>
-      <h1 className="mt-1 font-display text-[28px] font-extrabold uppercase leading-tight" style={{ color: '#FFFFFF' }}>
+      <h1 className="mt-1 font-display text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>
         {title}
       </h1>
     </div>
   )
 }
 
-
-
-
+/* ---------- Toasts ---------- */
 export function Toasts() {
   const { toasts } = useStore()
   return (
@@ -238,8 +218,8 @@ export function Toasts() {
       {toasts.map((t) => {
         const [, msg] = t.split('|')
         return (
-          <div key={t} className="anim-pop rounded-pill px-4 py-2 text-sm font-bold"
-            style={{ background: '#FDC55E', color: '#111111' }}>
+          <div key={t} className="anim-pop rounded-[22px] px-4 py-2 text-[13px] font-bold"
+            style={{ background: '#FBC85F', color: '#111111' }}>
             {msg}
           </div>
         )
