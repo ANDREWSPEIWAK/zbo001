@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { actions, useStore } from './store'
 import { Toasts } from './components/app-ui'
 import { rankFor } from './data/gamification'
@@ -14,29 +15,21 @@ import Resources from './sections/Resources'
 import Settings from './sections/Settings'
 import Profile from './sections/Profile'
 import {
-  Menu, X, User, Route, FileText, CheckCircle2, Clock, ShieldCheck, Palette, Globe, Settings as SettingsIcon,
+  Menu, X, User, Home, BookOpen, Target, GraduationCap, Sparkles, Clock, ShieldCheck, FileText, Globe, Settings as SettingsIcon,
   type LucideIcon,
 } from 'lucide-react'
 
 type AppTab =
-  | 'path'
-  | 'ttk'
-  | 'tests'
-  | 'library'
-  | 'wheel'
-  | 'shift'
-  | 'discipline'
-  | 'standards'
-  | 'resources'
-  | 'settings'
+  | 'path' | 'ttk' | 'tests' | 'library' | 'wheel'
+  | 'shift' | 'discipline' | 'standards' | 'resources' | 'settings'
 type DrawerItem = 'shift' | 'discipline' | 'standards' | 'resources' | 'settings'
 
 const bottomTabs: { id: AppTab; label: string; Icon: LucideIcon }[] = [
-  { id: 'path', label: 'Путь', Icon: Route },
-  { id: 'ttk', label: 'ТТК', Icon: FileText },
-  { id: 'tests', label: 'Тесты', Icon: CheckCircle2 },
-  { id: 'library', label: 'Методики', Icon: Palette },
-  { id: 'wheel', label: 'Вкусы', Icon: Palette },
+  { id: 'path', label: 'Путь', Icon: Home },
+  { id: 'ttk', label: 'ТТК', Icon: BookOpen },
+  { id: 'tests', label: 'Тесты', Icon: Target },
+  { id: 'library', label: 'Методики', Icon: GraduationCap },
+  { id: 'wheel', label: 'Вкусы', Icon: Sparkles },
 ]
 
 const drawerItems: { id: DrawerItem; label: string; Icon: LucideIcon }[] = [
@@ -114,16 +107,27 @@ export default function App() {
           className="watermark"
           style={{ pointerEvents: 'none', userSelect: 'none' }}
         />
-        {tab === 'path' && <Path />}
-        {tab === 'ttk' && <Ttk />}
-        {tab === 'tests' && <Tests />}
-        {tab === 'library' && <Library />}
-        {tab === 'wheel' && <Wheel />}
-        {tab === 'shift' && <Shift />}
-        {tab === 'discipline' && <Discipline />}
-        {tab === 'standards' && <Standards />}
-        {tab === 'resources' && <Resources />}
-        {tab === 'settings' && <Settings />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={tab}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="space-y-6"
+          >
+            {tab === 'path' && <Path />}
+            {tab === 'ttk' && <Ttk />}
+            {tab === 'tests' && <Tests />}
+            {tab === 'library' && <Library />}
+            {tab === 'wheel' && <Wheel />}
+            {tab === 'shift' && <Shift />}
+            {tab === 'discipline' && <Discipline />}
+            {tab === 'standards' && <Standards />}
+            {tab === 'resources' && <Resources />}
+            {tab === 'settings' && <Settings />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Bottom pill nav */}
@@ -141,11 +145,13 @@ export default function App() {
             const Icon = b.Icon
             const active = bottomActive === b.id
             return (
-              <button
+              <motion.button
                 key={b.id}
                 type="button"
                 aria-label={b.label}
                 onClick={() => go(b.id)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full btn-press"
                 style={{
                   background: active ? '#111111' : 'transparent',
@@ -154,7 +160,7 @@ export default function App() {
                 }}
               >
                 <Icon size={22} strokeWidth={1.8} strokeLinecap="round" />
-              </button>
+              </motion.button>
             )
           })}
         </div>
@@ -163,17 +169,23 @@ export default function App() {
       {/* Drawer */}
       {drawerOpen && (
         <>
-          <div
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50"
             style={{ background: 'rgba(0,0,0,0.55)' }}
             onClick={() => setDrawerOpen(false)}
           />
-          <div
+          <motion.div
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed inset-y-0 left-0 z-50 h-full w-[300px] overflow-y-auto"
             style={{
               background: '#1A1A1C',
               borderRadius: '0 32px 32px 0',
-              animation: 'slide-in-left 0.4s cubic-bezier(0.34,1.56,0.64,1)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -192,7 +204,7 @@ export default function App() {
                 <img src="/logo-202.svg" alt="202" style={{ width: 40, height: 40, borderRadius: 10 }} />
                 <span className="font-display text-[14px] font-extrabold uppercase leading-none">
                   <span style={{ color: '#8B5CF6' }}>202F</span>{' '}
-                  <span style={{ color: '#111111' }}>ACADEMY</span>
+                  <span style={{ color: '#0F0F10' }}>ACADEMY</span>
                 </span>
               </div>
 
@@ -200,11 +212,13 @@ export default function App() {
                 {drawerItems.map((item) => {
                   const Icon = item.Icon
                   return (
-                    <button
+                    <motion.button
                       key={item.id}
                       type="button"
                       aria-label={item.label}
                       onClick={() => goDrawer(item.id)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       className="flex w-full items-center gap-3 border-t border-solid border-[#3A3A3D] px-5 py-3.5 text-left"
                       style={{ height: 56 }}
                     >
@@ -212,10 +226,10 @@ export default function App() {
                         style={{ background: '#1A1A1C', color: '#C9DB8A' }}>
                         <Icon size={18} strokeWidth={1.8} strokeLinecap="round" />
                       </span>
-                      <span className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#111111' }}>
+                      <span className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>
                         {item.label}
                       </span>
-                    </button>
+                    </motion.button>
                   )
                 })}
               </div>
@@ -226,27 +240,32 @@ export default function App() {
                     <User size={16} strokeWidth={1.8} strokeLinecap="round" />
                   </span>
                   <div>
-                    <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#111111' }}>{r.current.title}</p>
+                    <p className="font-display text-[13px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>{r.current.title}</p>
                     <p className="text-[11px] font-bold tnum" style={{ color: '#666666' }}>{s.xp} XP</p>
                   </div>
                 </div>
-                <button
+                <motion.button
                   type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => { setDrawerOpen(false); setProfileOpen(true) }}
                   className="mt-3 w-full rounded-btn px-4 py-2.5 text-[12px] font-extrabold uppercase"
                   style={{ background: '#111111', color: '#FFFFFF', height: 44 }}
                 >
                   Профиль
-                </button>
+                </motion.button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </>
       )}
 
       {profileOpen && (
         <>
-          <div
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-50"
             style={{ background: 'rgba(0,0,0,0.55)' }}
             onClick={() => setProfileOpen(false)}

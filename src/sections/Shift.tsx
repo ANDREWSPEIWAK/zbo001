@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
 import { barPositions, serviceFlow, timeStandards, sequenceRules, rushDrinks, rushStepsLegend, type RushDrink } from '../data/service'
 import { Chip, ProgressBar, Pill, Card } from '../components/app-ui'
 
-/* ---------------- Rush simulator ---------------- */
 interface ActiveOrder {
   key: number
   drink: RushDrink
@@ -75,26 +75,41 @@ function Rush({ onExit }: { onExit: () => void }) {
 
   if (over) {
     return (
-      <div className="rounded-card bg-surface p-8 text-center anim-pop">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="rounded-card bg-surface p-8 text-left"
+      >
         <p className="eyebrow" style={{ color: '#8B5CF6' }}>Смена окончена</p>
-        <p className="font-display mt-3 text-[48px] font-extrabold" style={{ color: '#C9DB8A' }}>{served}</p>
-        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>гостей обслужено · потеряно: {lost}</p>
-        <p className="mx-auto mt-4 max-w-sm text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
-          {served >= 6
-            ? 'Машина потока. Поток не остановить — так держат утро в пике.'
-            : served >= 4
-              ? 'Хороший темп. Следите за приоритетом — обслуживайте самый «горячий» заказ первым.'
-              : 'Начинайте с самого нетерпеливого гостя и помните порядок сборки из ТТК.'}
-        </p>
+        <div className="flex items-start justify-between mt-3">
+          <p className="font-display text-[48px] font-extrabold" style={{ color: '#C9DB8A' }}>{served}</p>
+          <div>
+            <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>гостей обслужено · потеряно: {lost}</p>
+            <p className="text-[13px] leading-relaxed" style={{ color: '#0F0F10' }}>
+              {served >= 6
+                ? 'Машина потока. Поток не остановить — так держат утро в пике.'
+                : served >= 4
+                  ? 'Хороший темп. Следите за приоритетом — обслуживайте самый «горячий» заказ первым.'
+                  : 'Начинайте с самого нетерпеливого гостя и помните порядок сборки из ТТК.'}
+            </p>
+          </div>
+        </div>
         <button onClick={onExit} className="mt-6 rounded-[26px] px-8 py-3 text-[13px] font-extrabold uppercase btn-press"
           style={{ background: '#0F0F10', color: '#FFFFFF', height: 52 }}>Вернуться к смене</button>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <div className="anim-rise">
-      <div className="flex items-center justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      className="space-y-4"
+    >
+      <div className="flex items-start justify-between">
         <span className="font-display text-[24px] font-extrabold" style={{ color: left <= 10 ? '#F87171' : '#FBBF24' }}>0:{String(left).padStart(2, '0')}</span>
         <div className="flex gap-2">
           <Pill color="#C9DB8A">обслужено {served}</Pill>
@@ -105,7 +120,7 @@ function Rush({ onExit }: { onExit: () => void }) {
 
       <div className="mt-4 space-y-2">
         {orders.length === 0 && (
-          <div className="rounded-card bg-surface p-6 text-center text-[13px]" style={{ color: '#666666' }}>
+          <div className="rounded-card bg-surface p-6 text-left text-[13px]" style={{ color: '#666666' }}>
             Гости подходят к стойке…
           </div>
         )}
@@ -113,10 +128,13 @@ function Rush({ onExit }: { onExit: () => void }) {
           const pct = (o.patience / o.drink.patience) * 100
           const color = pct > 50 ? '#C9DB8A' : pct > 25 ? '#FBBF24' : '#F87171'
           return (
-            <div key={o.key} className="rounded-card bg-surface p-4" style={{ borderColor: color }}>
-              <div className="flex items-center justify-between">
+            <motion.div key={o.key} whileHover={{ scale: 1.005 }}
+              className="rounded-card bg-surface p-4"
+              style={{ borderColor: color }}
+            >
+              <div className="flex items-start justify-between">
                 <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{o.drink.name}</p>
-                <span className="text-[10px]" style={{ color: '#666666' }}>{o.progress}/{o.drink.steps.length}</span>
+                <span className="text-[10px]" style={{ color: '#666666' }}>{o.progress} / {o.drink.steps.length}</span>
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 {o.drink.steps.map((st, i) => (
@@ -124,13 +142,14 @@ function Rush({ onExit }: { onExit: () => void }) {
                     style={{
                       background: i < o.progress ? '#C9DB8A' : i === o.progress ? '#FBBF24' : '#1A1A1C',
                       color: i <= o.progress ? '#0F0F10' : '#FFFFFF',
-                    }}>
+                    }}
+                  >
                     {st}
                   </span>
                 ))}
               </div>
               <div className="mt-2"><ProgressBar value={pct} color={color} h={4} /></div>
-            </div>
+            </motion.div>
           )
         })}
       </div>
@@ -143,19 +162,19 @@ function Rush({ onExit }: { onExit: () => void }) {
               background: flash === 'bad' ? '#F8717133' : '#1A1A1C',
               border: '1px solid #3A3A3D',
               color: '#FFFFFF',
-            }}>
+            }}
+          >
             {st}
           </button>
         ))}
       </div>
-      <p className="mt-2 text-center text-[11px]" style={{ color: '#666666' }}>
+      <p className="mt-2 text-left text-[11px]" style={{ color: '#666666' }}>
         Нажимайте шаги в порядке сборки. Ошибка = −2 сек терпения гостя. Обслуживайте самый горячий заказ!
       </p>
-    </div>
+    </motion.div>
   )
 }
 
-/* ---------------- main section ---------------- */
 export default function Shift() {
   const s = useStore()
   const [tab, setTab] = useState<'model' | 'standards' | 'rush'>('model')
@@ -163,15 +182,25 @@ export default function Shift() {
 
   return (
     <div className="space-y-6">
-      <div className="anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="space-y-2"
+      >
         <p className="eyebrow">Смена · сервис и тайминг</p>
-        <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Смена как система</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Смена как система</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
           Модель высокопоточного бара: позиции, поток, секвенсинг и стандарты времени. Цифры — из калькуляций ТТК сети.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="no-scrollbar flex gap-2 overflow-x-auto anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+        className="no-scrollbar flex gap-2 overflow-x-auto"
+      >
         {([
           ['model', 'Модель бара'],
           ['standards', 'Стандарты времени'],
@@ -179,11 +208,16 @@ export default function Shift() {
         ] as const).map(([id, label]) => (
           <Chip key={id} active={tab === id} onClick={() => { setTab(id); setRushOn(false) }}>{label}</Chip>
         ))}
-      </div>
+      </motion.div>
 
       {tab === 'model' && (
-        <div className="space-y-6">
-          <Card light className="space-y-4 anim-rise">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+          className="space-y-6"
+        >
+          <Card light className="space-y-4">
             <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>5 принципов потока</h2>
             <p className="eyebrow mb-2" style={{ color: '#8B5CF6' }}>Источник: калькуляции ТТК сети</p>
             <div className="space-y-3">
@@ -196,7 +230,7 @@ export default function Shift() {
               ].map((p, i) => (
                 <div key={i} className="flex gap-3">
                   <span className="font-display text-[18px] font-extrabold" style={{ color: '#FBBF24' }}>{i + 1}</span>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{p.title}</p>
                     <p className="mt-1 text-[13px] leading-relaxed" style={{ color: '#666666' }}>{p.body}</p>
                   </div>
@@ -205,7 +239,7 @@ export default function Shift() {
             </div>
           </Card>
 
-          <Card light className="space-y-4 anim-rise">
+          <Card light className="space-y-4">
             <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Схема потока заказа</h2>
             <div className="mt-3 space-y-3">
               {serviceFlow.map((f, i) => (
@@ -216,7 +250,7 @@ export default function Shift() {
                     {i < serviceFlow.length - 1 && <span className="w-px flex-1" style={{ background: '#3A3A3D' }} />}
                   </div>
                   <div className="pb-4">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-start gap-2">
                       <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{f.title}</p>
                       <span className="text-[10px] font-bold" style={{ color: '#FBBF24' }}>{f.time}</span>
                     </div>
@@ -227,14 +261,14 @@ export default function Shift() {
             </div>
           </Card>
 
-          <Card light className="space-y-4 anim-rise">
+          <Card light className="space-y-4">
             <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Позиции в пике</h2>
             <p className="mt-1 text-[12px]" style={{ color: '#666666' }}>В малой смене один человек совмещает позиции — но логика потока та же.</p>
             <div className="mt-3 space-y-3">
               {barPositions.map((p) => (
                 <Card key={p.id} light className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
                       <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{p.title} <span className="text-[10px] uppercase" style={{ color: '#666666' }}>· {p.en}</span></p>
                       <p className="mt-0.5 text-[12px]" style={{ color: '#666666' }}>{p.mission}</p>
                     </div>
@@ -256,7 +290,7 @@ export default function Shift() {
             </div>
           </Card>
 
-          <Card light className="space-y-4 anim-rise">
+          <Card light className="space-y-4">
             <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Секвенсинг: порядок запуска</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {sequenceRules.map((r, i) => (
@@ -267,12 +301,17 @@ export default function Shift() {
               ))}
             </div>
           </Card>
-        </div>
+        </motion.div>
       )}
 
       {tab === 'standards' && (
-        <div className="space-y-6">
-          <Card light className="overflow-x-auto anim-rise">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+          className="space-y-6"
+        >
+          <Card light className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-[13px]">
               <thead>
                 <tr style={{ background: '#1A1A1C' }}>
@@ -294,8 +333,8 @@ export default function Shift() {
             </table>
           </Card>
 
-          <Card light className="space-y-4 anim-rise">
-            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#FFFFFF' }}>Отраслевые ориентиры</h2>
+          <Card light className="space-y-4">
+            <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Отраслевые ориентиры</h2>
             <p className="eyebrow mb-2" style={{ color: '#FBBF24' }}>SCA: вода, экстракция, температура</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {[
@@ -311,30 +350,46 @@ export default function Shift() {
               ))}
             </div>
           </Card>
-        </div>
+        </motion.div>
       )}
 
       {tab === 'rush' && (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+        >
           {rushOn ? (
             <>
-              <button onClick={() => setRushOn(false)} className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
-                style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}>← Назад</button>
+              <motion.button onClick={() => setRushOn(false)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className="mb-5 rounded-[22px] border px-4 py-2 text-[12px] font-bold btn-press"
+                style={{ borderColor: '#3A3A3D', color: '#FFFFFF' }}
+              >
+                ← Назад
+              </motion.button>
               <Rush onExit={() => setRushOn(false)} />
             </>
           ) : (
-            <Card light className="p-8 text-center anim-rise">
+            <Card light className="p-8 text-center">
               <p className="eyebrow" style={{ color: '#F87171' }}>Тренажёр потока</p>
               <h2 className="font-display mt-2 text-[22px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>Rush-симулятор</h2>
               <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed" style={{ color: '#666666' }}>
                 60 секунд утреннего пика. Гости приходят с заказами, терпение тает. Собирайте напитки по шагам из ТТК, обслуживайте самые горячие заказы первыми.
               </p>
               <p className="mt-4 text-[13px] font-bold" style={{ color: '#C9DB8A' }}>Рекорд: {s.rushBest} гостей</p>
-              <button onClick={() => setRushOn(true)} className="mt-6 rounded-[26px] px-10 py-4 text-[13px] font-extrabold uppercase btn-press"
-                style={{ background: '#F87171', color: '#0F0F10', height: 52 }}>Начать смену</button>
+              <motion.button onClick={() => setRushOn(true)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className="mt-6 rounded-[26px] px-10 py-4 text-[13px] font-extrabold uppercase btn-press"
+                style={{ background: '#F87171', color: '#0F0F10', height: 52 }}
+              >
+                Начать смену
+              </motion.button>
             </Card>
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   )

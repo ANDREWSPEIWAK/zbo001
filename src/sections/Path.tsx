@@ -1,14 +1,20 @@
 import { useMemo } from 'react'
+import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
 import { levels, modules, attestations } from '../data/curriculum'
 import { rankFor, badges } from '../data/gamification'
+import { recipes } from '../data/recipes'
 import { ProgressRing, ProgressBar, Card, Button, Pill } from '../components/app-ui'
 
 export default function Path() {
   const s = useStore()
   const r = rankFor(s.xp)
   const knownCount = Object.values(s.known).filter(Boolean).length
-  const quests = s.quests.items
+  const totalTtk = recipes.length
+  const lessonsCount = Object.values(s.lessonsRead).filter(Boolean).length
+  const totalLessons = levels.reduce((acc, lv) => acc + lv.moduleIds.length, 0)
+  const examTotal = Object.values(s.examKnown).filter(Boolean).length
+  const totalExam = 40
 
   const greeting = useMemo(() => {
     const h = new Date().getHours()
@@ -18,7 +24,6 @@ export default function Path() {
     return 'Вечерний сервис'
   }, [])
 
-  // next unfinished module across levels
   const nextModule = useMemo(() => {
     for (const lv of levels) {
       for (const m of modules.filter((m) => m.levelId === lv.id)) {
@@ -29,10 +34,10 @@ export default function Path() {
   }, [s.modulesDone])
 
   const blocks = [
-    { id: 'ttk', title: 'ТТК', value: `${knownCount}/79`, color: '#C9DB8A' },
-    { id: 'lessons', title: 'Методики', value: `${Object.values(s.lessonsRead).filter(Boolean).length}/31`, color: '#C9DB8A' },
-    { id: 'exam', title: 'Экзамен', value: `${Object.values(s.examKnown).filter(Boolean).length}/40`, color: '#FBBF24' },
-    { id: 'badges', title: 'Бейджи', value: `${s.earnedBadges.length}/${badges.length}`, color: '#FBBF24' },
+    { id: 'ttk', title: 'ТТК', value: `${knownCount}`, total: `${totalTtk}`, color: '#C9DB8A' },
+    { id: 'lessons', title: 'Методики', value: `${lessonsCount}`, total: `${totalLessons}`, color: '#C9DB8A' },
+    { id: 'exam', title: 'Экзамен', value: `${examTotal}`, total: `${totalExam}`, color: '#FBBF24' },
+    { id: 'badges', title: 'Бейджи', value: `${s.earnedBadges.length}`, total: `${badges.length}`, color: '#FBBF24' },
   ]
 
   const continueTarget = nextModule
@@ -41,7 +46,12 @@ export default function Path() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4 anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="flex flex-wrap items-end justify-between gap-4"
+      >
         <div>
           <p className="eyebrow">{greeting}</p>
           <h1 className="mt-1 font-display text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>
@@ -57,60 +67,77 @@ export default function Path() {
             {r.next && <p className="text-[11px] font-bold tnum" style={{ color: '#666666' }}>до «{r.next.title}» {r.next.xp - s.xp} XP</p>}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Продолжить — главный шаг */}
-      <Card light accent="#FBBF24" className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="eyebrow" style={{ color: '#8B5CF6' }}>Что сделать сейчас</p>
-            <h2 className="font-display mt-1 text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
-              Продолжить {continueTarget.id ? '«' + continueTarget.label + '»' : ''}
-            </h2>
-            <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{continueTarget.subtitle}</p>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+        className="space-y-3"
+      >
+        <Card light accent="#FBBF24" className="space-y-3">
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <p className="eyebrow" style={{ color: '#8B5CF6' }}>Что сделать сейчас</p>
+              <h2 className="font-display mt-1 text-[20px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
+                Продолжить {continueTarget.id ? '«' + continueTarget.label + '»' : ''}
+              </h2>
+              <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{continueTarget.subtitle}</p>
+            </div>
+            <ProgressRing value={r.next ? (r.into / r.span) * 100 : 100} size={44} color="#C9DB8A" stroke={4}>
+              <span className="text-[9px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((r.next ? (r.into / r.span) * 100 : 100))}%</span>
+            </ProgressRing>
           </div>
-          <ProgressRing value={r.next ? (r.into / r.span) * 100 : 100} size={44} color="#C9DB8A" stroke={4}>
-            <span className="text-[9px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((r.next ? (r.into / r.span) * 100 : 100))}%</span>
-          </ProgressRing>
-        </div>
-        {continueTarget.id && (
-          <Button onClick={() => actions.completeModule(continueTarget.id)} className="mt-3 w-full" style={{ height: 44, fontSize: '12px' }}>
-            Открыть модуль · +40 XP
-          </Button>
-        )}
-        {!continueTarget.id && (
-          <p className="mt-3 text-[12px] font-bold text-center" style={{ color: '#C9DB8A' }}>Программа пройдена — перейдите к аттестации.</p>
-        )}
-      </Card>
+          {continueTarget.id && (
+            <Button onClick={() => actions.completeModule(continueTarget.id)} className="mt-3 w-full" style={{ height: 44, fontSize: '12px' }}>
+              Открыть модуль · +40 XP
+            </Button>
+          )}
+          {!continueTarget.id && (
+            <p className="mt-3 text-[12px] font-bold text-left" style={{ color: '#C9DB8A' }}>Программа пройдена — перейдите к аттестации.</p>
+          )}
+        </Card>
+      </motion.div>
 
       {/* Прогресс-кольца по блокам */}
-      <div className="grid grid-cols-2 gap-3 anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+        className="grid grid-cols-2 gap-3"
+      >
         {blocks.map((b) => (
           <Card key={b.id} light className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="eyebrow" style={{ color: '#8B5CF6' }}>{b.title}</p>
-                <p className="font-display mt-0.5 text-[13px] font-extrabold tnum" style={{ color: '#0F0F10' }}>{b.value}</p>
+                <p className="font-display mt-0.5 text-[13px] font-extrabold tnum" style={{ color: '#0F0F10' }}>{b.value} / {b.total}</p>
               </div>
-              <ProgressRing value={(parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100} size={48} color={b.color} stroke={5}>
-                <span className="text-[10px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100)}%</span>
+              <ProgressRing value={(parseInt(b.value) / parseInt(b.total)) * 100} size={48} color={b.color} stroke={5}>
+                <span className="text-[10px] font-bold tnum" style={{ color: '#0F0F10' }}>{Math.round((parseInt(b.value) / parseInt(b.total)) * 100)}%</span>
               </ProgressRing>
             </div>
-            <div className="mt-2"><ProgressBar value={(parseInt(b.value.split('/')[0]) / parseInt(b.value.split('/')[1])) * 100} color={b.color} h={5} /></div>
+            <div className="mt-2"><ProgressBar value={(parseInt(b.value) / parseInt(b.total)) * 100} color={b.color} h={5} /></div>
           </Card>
         ))}
-      </div>
+      </motion.div>
 
       {/* Квесты дня */}
-      <div className="rounded-card bg-surface overflow-hidden anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.3 }}
+        className="rounded-card bg-surface overflow-hidden"
+      >
         <div className="p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-start justify-between mb-4">
             <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#0F0F10' }}>Квесты дня</h2>
             <Pill color="#FBBF24">обновятся завтра</Pill>
           </div>
           <div className="space-y-3">
-            {quests.map((q) => (
-              <div key={q.id} className="flex items-center gap-3">
+            {s.quests.items.map((q) => (
+              <div key={q.id} className="flex items-start gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <p className={`text-[13px] font-bold ${q.done ? 'line-through opacity-50' : ''}`} style={{ color: '#0F0F10' }}>{q.title}</p>
@@ -128,10 +155,15 @@ export default function Path() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Уровни */}
-      <div className="space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.4 }}
+        className="space-y-3"
+      >
         <h2 className="font-display text-[15px] font-extrabold uppercase" style={{ color: '#FFFFFF' }}>Уровни карьеры</h2>
         <div className="mt-3 space-y-3">
           {levels.map((lv) => {
@@ -142,15 +174,15 @@ export default function Path() {
             return (
               <Card key={lv.id} light className="overflow-hidden space-y-0">
                 <div className="p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
                       <p className="eyebrow" style={{ color: '#8B5CF6' }}>Уровень {lv.n} · {lv.duration}</p>
                       <h3 className="font-display mt-1 text-[15px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>
                         {lv.title}
                       </h3>
                       <p className="mt-0.5 text-[12px] font-bold" style={{ color: '#666666' }}>{lv.tagline}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left">
                       <p className="font-display text-[14px] font-extrabold tnum" style={{ color: xpLocked ? '#F87171' : '#C9DB8A' }}>
                         {xpLocked ? `закр. при ${lv.id === 'skilled' ? 200 : 600} XP` : Math.round(pct) + '%'}
                       </p>
@@ -198,9 +230,9 @@ export default function Path() {
             )
           })}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="text-center text-[11px]" style={{ color: '#666666' }}>
+      <div className="text-left text-[11px]" style={{ color: '#666666' }}>
         Источник норм и времени: калькуляции ТТК сети. Прогресс хранится только в этом браузере.
       </div>
     </div>

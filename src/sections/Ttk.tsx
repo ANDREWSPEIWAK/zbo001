@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import { actions, useStore } from '../store'
 import { recipes, ttkCategories, type Recipe } from '../data/recipes'
 import { Search, Chip, ProgressBar, Pill } from '../components/app-ui'
@@ -20,6 +21,12 @@ const CATEGORY_COLOR: Record<string, string> = {
   icecream: '#FBBF24',
 }
 
+const XP_VALUES = {
+  markKnown: 6,
+  recallCorrect: 4,
+  buildCorrect: 10,
+} as const
+
 function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; onClose: () => void; onTrain: () => void; onRecall: () => void }) {
   const s = useStore()
   const known = !!s.known[recipe.id]
@@ -27,8 +34,24 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
   const color = CATEGORY_COLOR[recipe.category] || '#666666'
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" style={{ background: 'rgba(18,18,18,0.75)' }} onClick={onClose}>
-      <div className="anim-rise max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5" style={{ background: '#1A1A1C', color: '#FFFFFF' }} onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+      style={{ background: 'rgba(18,18,18,0.75)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5"
+        style={{ background: '#1A1A1C', color: '#FFFFFF' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="eyebrow" style={{ color: color }}>{cat?.title}</p>
@@ -40,11 +63,10 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
           <button onClick={onClose} className="rounded-[22px] px-3 py-1.5 text-[12px] font-bold" style={{ background: '#1A1A1C', color: '#FFFFFF' }}>Закрыть</button>
         </div>
 
-        {/* Unified recipe schema */}
         <div className="mt-4 grid gap-3">
           <div className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
             <p className="eyebrow" style={{ color: '#8B5CF6' }}>Рецепт (единая схема)</p>
-            <p className="mt-1 font-display text-[15px] font-extrabold leading-relaxed" style={{ color: '#FFFFFF' }}>{recipe.recipe.ru}</p>
+            <p className="mt-1 font-display text-[15px] font-extrabold leading-relaxed" style={{ color: '#0F0F10' }}>{recipe.recipe.ru}</p>
             <p className="mt-2 text-[11px] font-bold" style={{ color: '#666666' }}>Доза · выход · время · молоко · посуда — из карточка станции.</p>
           </div>
           <div className="rounded-[24px] p-4" style={{ background: '#FFFFFF' }}>
@@ -71,7 +93,7 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
             className="rounded-[26px] px-4 py-3 text-[13px] font-extrabold uppercase btn-press"
             style={{ background: known ? '#FFFFFF' : '#0F0F10', color: known ? '#0F0F10' : '#FFFFFF', height: 52, border: known ? '1px solid #3A3A3D' : 'none' }}
           >
-            {known ? 'Знаю ✓' : 'Отметить знакомым · +6 XP'}
+            {known ? 'Знаю ✓' : `Отметить знакомым · +${XP_VALUES.markKnown} XP`}
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button onClick={onTrain} className="rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press"
@@ -80,30 +102,44 @@ function RecipeModal({ recipe, onClose, onTrain, onRecall }: { recipe: Recipe; o
               style={{ background: color, color: '#FFFFFF', height: 52 }}>Вспомни значения</button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
-/* ---------- Вспомни: скрытые значения ---------- */
 function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void }) {
   const [answer, setAnswer] = useState('')
   const [show, setShow] = useState(false)
   const [result, setResult] = useState<'ok' | 'bad' | null>(null)
 
-  // pick the first numeric value in the recipe string as the target
   const nums = recipe.recipe.ru.match(/\d+(?:[.,]\d+)?/g)
   const target = nums ? nums[0] : '—'
 
   const check = () => {
     const ok = answer.trim().replace(/,/g, '.') === target
     setResult(ok ? 'ok' : 'bad')
-    if (ok) actions.addXp(4, 'вспомни ТТК')
+    if (ok) actions.addXp(XP_VALUES.recallCorrect, 'вспомни ТТК')
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" style={{ background: 'rgba(18,18,18,0.75)' }} onClick={onClose}>
-      <div className="anim-pop max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5" style={{ background: '#1A1A1C', color: '#0F0F10' }} onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+      style={{ background: 'rgba(18,18,18,0.75)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5"
+        style={{ background: '#1A1A1C', color: '#0F0F10' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="eyebrow" style={{ color: '#FBBF24' }}>Режим «Вспомни»</p>
@@ -117,7 +153,7 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
         </p>
 
         <div className="mt-4 rounded-[24px] p-5" style={{ background: '#FFFFFF' }}>
-            <p className="eyebrow" style={{ color: '#F87171' }}>Вопрос</p>
+          <p className="eyebrow" style={{ color: '#F87171' }}>Вопрос</p>
           <p className="mt-1 font-display text-[16px] font-extrabold leading-relaxed" style={{ color: '#0F0F10' }}>
             {recipe.recipe.ru.replace(/\d+(?:[.,]\d+)?/, '____')}
           </p>
@@ -136,23 +172,17 @@ function RecallModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
             </div>
           ) : (
             <div className="mt-4 space-y-2">
-              {
-                (() => {
-                  const color = result === 'ok' ? 'text-[#C9DB8A]' : 'text-[#F87171]'
-                  const label = result === 'ok' ? 'Верно · +4 XP' : `Неверно. Эталон: ${target}`
-                  return (
-                    <p className={`text-[14px] font-bold ${color}`}>{label}</p>
-                  )
-                })()
-              }
+              <p className={`text-[14px] font-bold ${result === 'ok' ? 'text-[#C9DB8A]' : 'text-[#F87171]'}`}>
+                {result === 'ok' ? `Верно · +${XP_VALUES.recallCorrect} XP` : `Неверно. Эталон: ${target}`}
+              </p>
               <p className="mt-1 text-[12px]" style={{ color: '#0F0F10' }}>Полный рецепт: {recipe.recipe.ru}</p>
               <button onClick={() => { setShow(false); setResult(null); setAnswer('') }} className="rounded-[26px] px-4 py-3 text-[12px] font-extrabold uppercase btn-press w-full"
                 style={{ background: '#1A1A1C', color: '#FFFFFF', height: 44 }}>Ещё раз</button>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
@@ -165,6 +195,7 @@ export default function Ttk() {
   const [recall, setRecall] = useState<Recipe | null>(null)
 
   const knownCount = Object.values(s.known).filter(Boolean).length
+  const totalTtk = recipes.length
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -177,52 +208,78 @@ export default function Ttk() {
 
   return (
     <div className="space-y-6">
-      <div className="anim-rise">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="space-y-2"
+      >
         <p className="eyebrow">ТТК · техкарты станции</p>
-        <h1 className="font-display mt-2 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Рецепты и сборка</h1>
-        <p className="mt-2 text-[13px]" style={{ color: '#666666' }}>
+        <h1 className="font-display mt-1 text-[28px] font-extrabold uppercase leading-none" style={{ color: '#FFFFFF' }}>Рецепты и сборка</h1>
+        <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>
           Карточки: рецепт по единой схеме, вкус, метод, шаги. Проверяйте знание режимом «Вспомни», а не отметкой «знаю».
         </p>
-      </div>
+      </motion.div>
 
-      <div className="rounded-card bg-surface p-4 anim-rise">
-        <div className="flex items-center justify-between text-[12px]" style={{ color: '#666666' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+        className="rounded-card bg-surface p-4"
+      >
+        <div className="flex items-start justify-between text-[12px]" style={{ color: '#666666' }}>
           <span>Знаю рецептов</span>
-          <span className="font-bold tnum" style={{ color: '#C9DB8A' }}>{knownCount}/79</span>
+          <span className="font-bold tnum" style={{ color: '#C9DB8A' }}>{knownCount} / {totalTtk}</span>
         </div>
-        <div className="mt-2"><ProgressBar value={(knownCount / 79) * 100} color="#C9DB8A" h={6} /></div>
-      </div>
+        <div className="mt-2"><ProgressBar value={(knownCount / totalTtk) * 100} color="#C9DB8A" h={6} /></div>
+      </motion.div>
 
-      <Search value={query} onChange={setQuery} placeholder="Поиск: flat white, раф, V60…" />
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+      >
+        <Search value={query} onChange={setQuery} placeholder="Поиск: flat white, раф, V60…" />
 
-      <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1 anim-rise">
-        <Chip active={cat === 'all'} onClick={() => setCat('all')}>Все</Chip>
-        {ttkCategories.map((c) => (
-          <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>{c.title}</Chip>
-        ))}
-      </div>
+        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1 mt-4">
+          <Chip active={cat === 'all'} onClick={() => setCat('all')}>Все</Chip>
+          {ttkCategories.map((c) => (
+            <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>{c.title}</Chip>
+          ))}
+        </div>
+      </motion.div>
 
-      <div className="space-y-2">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.3 }}
+        className="space-y-2"
+      >
         {filtered.map((r, i) => {
           const known = !!s.known[r.id]
           const color = CATEGORY_COLOR[r.category] || '#666666'
           return (
-            <button key={r.id} onClick={() => setOpen(r)}
-              className="rounded-card bg-surface flex w-full items-center gap-3 p-4 text-left anim-rise"
-              style={{ animationDelay: `${Math.min(i, 12) * 30}ms`, borderLeft: `4px solid ${color}` }}>
+            <motion.button
+              key={r.id}
+              onClick={() => setOpen(r)}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="rounded-card bg-surface flex w-full items-center gap-3 p-4 text-left"
+              style={{ animationDelay: `${Math.min(i, 12) * 30}ms`, borderLeft: `4px solid ${color}` }}
+            >
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: known ? '#C9DB8A' : '#4A4A4D' }} />
               <div className="min-w-0 flex-1">
                 <p className="text-[13px] font-bold" style={{ color: '#0F0F10' }}>{r.name}</p>
                 <p className="truncate text-[12px]" style={{ color: '#666666' }}>{r.recipe.ru}</p>
               </div>
               <Pill color={known ? '#C9DB8A' : color}>{ttkCategories.find((c) => c.id === r.category)?.title}</Pill>
-            </button>
+            </motion.button>
           )
         })}
         {filtered.length === 0 && (
-          <p className="py-8 text-center text-[13px]" style={{ color: '#666666' }}>Ничего не найдено. Попробуй другой запрос.</p>
+          <p className="py-8 text-left text-[13px]" style={{ color: '#666666' }}>Ничего не найдено. Попробуй другой запрос.</p>
         )}
-      </div>
+      </motion.div>
 
       {open && !train && !recall && <RecipeModal recipe={open} onClose={() => setOpen(null)} onTrain={() => setTrain(open)} onRecall={() => setRecall(open)} />}
       {train && <BuildTrainer recipe={train} onClose={() => { setTrain(null); setOpen(null) }} />}
@@ -242,7 +299,7 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
     const ok = next.every((s, i) => s === correct[i])
     setResult(ok)
     if (ok) {
-      actions.addXp(10, 'сборка верна')
+      actions.addXp(XP_VALUES.buildCorrect, 'сборка верна')
       actions.markKnown(recipe.id, true)
     }
   }
@@ -255,8 +312,24 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" style={{ background: 'rgba(18,18,18,0.75)' }} onClick={onClose}>
-      <div className="anim-pop max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5" style={{ background: '#1A1A1C', color: '#0F0F10' }} onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+      style={{ background: 'rgba(18,18,18,0.75)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-card p-5"
+        style={{ background: '#1A1A1C', color: '#0F0F10' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="eyebrow" style={{ color: '#FBBF24' }}>Build-тренажёр</p>
         <h2 className="font-display mt-1 text-[18px] font-extrabold uppercase leading-none" style={{ color: '#0F0F10' }}>{recipe.name}</h2>
         <p className="mt-1 text-[13px]" style={{ color: '#666666' }}>Соберите напиток: нажимайте шаги в правильном порядке.</p>
@@ -287,9 +360,9 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
         )}
 
         {result !== null && (
-          <div className="mt-4 rounded-[24px] p-4 text-center" style={{ background: result ? '#C9DB8A22' : '#F8717122' }}>
+          <div className="mt-4 rounded-[24px] p-4 text-left" style={{ background: result ? '#C9DB8A22' : '#F8717122' }}>
             <p className="font-display text-[16px] font-extrabold" style={{ color: result ? '#C9DB8A' : '#F87171' }}>
-              {result ? 'Сборка идеальна · +10 XP' : 'Порядок нарушен'}
+              {result ? `Сборка идеальна · +${XP_VALUES.buildCorrect} XP` : 'Порядок нарушен'}
             </p>
             {!result && (
               <p className="mt-2 text-[12px]" style={{ color: '#0F0F10' }}>
@@ -300,7 +373,7 @@ function BuildTrainer({ recipe, onClose }: { recipe: Recipe; onClose: () => void
               style={{ background: '#0F0F10', color: '#FFFFFF', height: 44 }}>Готово</button>
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
